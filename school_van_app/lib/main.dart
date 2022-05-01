@@ -1,19 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:provider/provider.dart';
-import 'package:school_van_app/auth/accountselect.dart';
-import 'package:school_van_app/auth/logindriver.dart';
-import 'package:school_van_app/auth/loginparent.dart';
-import 'package:school_van_app/auth/regdriver.dart';
-import 'package:school_van_app/locationservice/mapservice.dart';
-import 'package:school_van_app/models/location.dart';
 import 'package:school_van_app/services/authentication.dart';
 import 'package:school_van_app/wrappers/authwrapper.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final androidConfig = FlutterBackgroundAndroidConfig(
+    notificationTitle: "School Van App",
+    notificationText: "App is Running",
+    notificationImportance: AndroidNotificationImportance.Default,
+    notificationIcon: AndroidResource(name: 'background_icon', defType: 'drawable'), // Default is ic_launcher from folder mipmap
+    enableWifiLock: false
+  );
+  bool success = await FlutterBackground.initialize(androidConfig: androidConfig);
+  await FlutterBackground.enableBackgroundExecution();
  runApp(const MyApp());
 }
 
