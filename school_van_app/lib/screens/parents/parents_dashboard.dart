@@ -1,6 +1,7 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:timeline_tile/timeline_tile.dart';
+// import 'package:timelines/timelines.dart';
 
 class Parent_Dashboard extends StatefulWidget {
   const Parent_Dashboard({Key? key}) : super(key: key);
@@ -10,6 +11,11 @@ class Parent_Dashboard extends StatefulWidget {
 }
 
 class _Parent_DashboardState extends State<Parent_Dashboard> {
+  bool isReminder1 = true;
+  bool isPickedup = true;
+  bool isAtSchool = true;
+  bool isReminder2 = true;
+  bool isDroped = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -366,15 +372,233 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                 )
               ],
             ),
-            Container(
-                margin: const EdgeInsets.all(12.0),
-                height: MediaQuery.of(context).size.height * 0.28,
+            SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(12.0),
                 width: MediaQuery.of(context).size.width * 0.9,
                 decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 251, 252, 253),
                   borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                  color: Colors.white,
                 ),
-                child: Column())
+                child: Column(
+                  children: <Widget>[
+                    TimelineTile(
+                        alignment: TimelineAlign.start,
+                        isFirst: true,
+                        indicatorStyle: IndicatorStyle(
+                          width: 40,
+                          height: 40,
+                          padding: const EdgeInsets.all(8),
+                          indicator: Icon(
+                            Icons.notifications_active_rounded,
+                            color: isReminder1 ? Colors.orange : Colors.grey,
+                          ),
+                        ),
+                        endChild: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("06:30 AM"),
+                              const SizedBox(
+                                width: 20.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "Reminder 1",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Text("345 Dehiwala")
+                                ],
+                              ),
+                            ],
+                          ),
+                        )),
+                    TimelineTile(
+                        alignment: TimelineAlign.start,
+                        beforeLineStyle: LineStyle(
+                          color: isPickedup ? Colors.orange : Colors.grey,
+                          thickness: 1,
+                        ),
+                        afterLineStyle: LineStyle(
+                          color: isAtSchool ? Colors.orange : Colors.grey,
+                          thickness: 1,
+                        ),
+                        indicatorStyle: IndicatorStyle(
+                          width: 40,
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                          drawGap: true,
+                          indicator: Icon(
+                            Icons.location_pin,
+                            color: isPickedup ? Colors.orange : Colors.grey,
+                          ),
+                        ),
+                        endChild: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("06:45 AM"),
+                              const SizedBox(
+                                width: 20.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "Pick up",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Text("345 Dehiwala")
+                                ],
+                              ),
+                            ],
+                          ),
+                        )),
+                    TimelineTile(
+                        alignment: TimelineAlign.start,
+                        beforeLineStyle: LineStyle(
+                          color: isAtSchool ? Colors.orange : Colors.grey,
+                          thickness: 1,
+                        ),
+                        afterLineStyle: LineStyle(
+                          color: isReminder2 ? Colors.orange : Colors.grey,
+                          thickness: 1,
+                        ),
+                        indicatorStyle: IndicatorStyle(
+                          width: 40,
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                          drawGap: true,
+                          indicator: Icon(
+                            Icons.school_rounded,
+                            color: isAtSchool ? Colors.orange : Colors.grey,
+                          ),
+                        ),
+                        endChild: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("07:10 AM"),
+                              const SizedBox(
+                                width: 20.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "At school",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Text("Royal college")
+                                ],
+                              ),
+                            ],
+                          ),
+                        )),
+                    TimelineTile(
+                        alignment: TimelineAlign.start,
+                        beforeLineStyle: LineStyle(
+                          color: isReminder2 ? Colors.orange : Colors.grey,
+                          thickness: 1,
+                        ),
+                        afterLineStyle: LineStyle(
+                          color: isDroped ? Colors.orange : Colors.grey,
+                          thickness: 1,
+                        ),
+                        indicatorStyle: IndicatorStyle(
+                          width: 40,
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                          drawGap: true,
+                          indicator: Icon(
+                            Icons.notifications_active_rounded,
+                            color: isReminder2 ? Colors.orange : Colors.grey,
+                          ),
+                        ),
+                        endChild: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("14:20 PM"),
+                              const SizedBox(
+                                width: 20.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "Reminder 2",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Text("Royal college")
+                                ],
+                              ),
+                            ],
+                          ),
+                        )),
+                    TimelineTile(
+                        alignment: TimelineAlign.start,
+                        isLast: true,
+                        beforeLineStyle: LineStyle(
+                          color: isDroped ? Colors.orange : Colors.grey,
+                          thickness: 1,
+                        ),
+                        indicatorStyle: IndicatorStyle(
+                          width: 40,
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                          drawGap: true,
+                          indicator: Icon(
+                            Icons.location_pin,
+                            color: isDroped ? Colors.orange : Colors.grey,
+                          ),
+                        ),
+                        endChild: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("14:40 PM"),
+                              const SizedBox(
+                                width: 20.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "Drop",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Text("345 Dehiwala")
+                                ],
+                              ),
+                            ],
+                          ),
+                        )),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
