@@ -12,6 +12,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:school_van_app/auth/accountselect.dart';
 
 class locationfind extends StatefulWidget {
   const locationfind({Key? key}) : super(key: key);
@@ -103,6 +104,7 @@ class _locationfindState extends State<locationfind> {
                       onPressed: () async {
                         FirebaseAuth _auth = FirebaseAuth.instance;
                         await _auth.signOut();
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>accountselect()), (route) => false);
                         setState(() {});
                       },
                       child: Text('Sign Out'))
