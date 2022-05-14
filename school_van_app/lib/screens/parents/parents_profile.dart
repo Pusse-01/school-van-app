@@ -173,7 +173,7 @@ class _Parents_profileState extends State<Parents_profile> {
 
                                   ),
                                   SizedBox(height: 10,),
-                                  
+
                                   SizedBox(height: 10,),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
