@@ -44,7 +44,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
               children: [
                 Container(
                   margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                  height: MediaQuery.of(context).size.height * 0.15,
+                  height: MediaQuery.of(context).size.height * 0.12,
                   width: MediaQuery.of(context).size.width * 0.40,
                   decoration: const BoxDecoration(
                     color: Color(0xff4E8CDD),
@@ -65,6 +65,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                             ),
                           )
                         ]),
+                        const Divider(
+                          height: 10,
+                          thickness: 0.6,
+                          indent: 0,
+                          endIndent: 0,
+                          color: Color(0xff4E8CDD),
+                        ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
@@ -85,6 +92,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                 ),
                               )
                             ]),
+                        const Divider(
+                          height: 10,
+                          thickness: 0.6,
+                          indent: 0,
+                          endIndent: 0,
+                          color: Color.fromARGB(255, 194, 192, 192),
+                        ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
@@ -111,7 +125,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                 ),
                 Container(
                   margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                  height: MediaQuery.of(context).size.height * 0.15,
+                  height: MediaQuery.of(context).size.height * 0.12,
                   width: MediaQuery.of(context).size.width * 0.40,
                   decoration: const BoxDecoration(
                     color: Color(0xff4E8CDD),
@@ -132,6 +146,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                             ),
                           )
                         ]),
+                        const Divider(
+                          height: 10,
+                          thickness: 0.6,
+                          indent: 0,
+                          endIndent: 0,
+                          color: Color(0xff4E8CDD),
+                        ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
@@ -152,6 +173,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                 ),
                               )
                             ]),
+                        const Divider(
+                          height: 10,
+                          thickness: 0.6,
+                          indent: 0,
+                          endIndent: 0,
+                          color: Color.fromARGB(255, 194, 192, 192),
+                        ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
@@ -183,7 +211,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
               children: [
                 Container(
                   margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                  height: MediaQuery.of(context).size.height * 0.06,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   width: MediaQuery.of(context).size.width * 0.7,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -218,7 +246,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
             ),
             Container(
               margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 0.0),
-              height: MediaQuery.of(context).size.height * 0.28,
+              height: MediaQuery.of(context).size.height * 0.4,
               width: MediaQuery.of(context).size.width * 0.9,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -245,6 +273,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         )
                       ],
                     ),
+                    const Divider(
+                      height: 20,
+                      thickness: 0.6,
+                      indent: 0,
+                      endIndent: 0,
+                      color: Colors.grey,
+                    ),
                     Row(
                       children: [
                         Icon(Icons.document_scanner),
@@ -260,6 +295,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                           ),
                         )
                       ],
+                    ),
+                    const Divider(
+                      height: 20,
+                      thickness: 0.6,
+                      indent: 0,
+                      endIndent: 0,
+                      color: Colors.grey,
                     ),
                     Row(
                       children: [
@@ -277,6 +319,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         )
                       ],
                     ),
+                    const Divider(
+                      height: 20,
+                      thickness: 0.6,
+                      indent: 0,
+                      endIndent: 0,
+                      color: Colors.grey,
+                    ),
                     Row(
                       children: [
                         Icon(Icons.phone_android),
@@ -292,6 +341,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                           ),
                         )
                       ],
+                    ),
+                    const Divider(
+                      height: 20,
+                      thickness: 0.6,
+                      indent: 0,
+                      endIndent: 0,
+                      color: Colors.grey,
                     ),
                     Row(
                       children: [
@@ -309,6 +365,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         )
                       ],
                     ),
+                    const Divider(
+                      height: 20,
+                      thickness: 0.6,
+                      indent: 0,
+                      endIndent: 0,
+                      color: Colors.grey,
+                    ),
                     Row(
                       children: [
                         Icon(Icons.home),
@@ -324,6 +387,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                           ),
                         )
                       ],
+                    ),
+                    const Divider(
+                      height: 20,
+                      thickness: 0.6,
+                      indent: 0,
+                      endIndent: 0,
+                      color: Colors.grey,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -386,9 +456,13 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                     TimelineTile(
                         alignment: TimelineAlign.start,
                         isFirst: true,
+                        afterLineStyle: LineStyle(
+                          color: isPickedup ? Colors.orange : Colors.grey,
+                          thickness: 1,
+                        ),
                         indicatorStyle: IndicatorStyle(
                           width: 40,
-                          height: 40,
+                          height: 20,
                           padding: const EdgeInsets.all(8),
                           indicator: Icon(
                             Icons.notifications_active_rounded,
