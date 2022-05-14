@@ -17,201 +17,226 @@ class Parents_profile extends StatefulWidget {
 }
 
 class _Parents_profileState extends State<Parents_profile> {
-  final Imagepic =ImagePicker();
-  FirebaseAuth _auth =FirebaseAuth.instance;
-  String error ="";
-  FirebaseFirestore store =FirebaseFirestore.instance;
-  TextEditingController fullName =TextEditingController();
-  TextEditingController email =TextEditingController();
-  TextEditingController contact =TextEditingController();
-  TextEditingController password =TextEditingController();
-  TextEditingController confirm =TextEditingController();
-  TextEditingController driving =TextEditingController();
-  TextEditingController NIC =TextEditingController();
-  TextEditingController address =TextEditingController();
-  int index=1;
-  File ? name;
-  bool obsecure=true,loading =false,updated=false;
-  var  user;
+  final Imagepic = ImagePicker();
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String error = "";
+  FirebaseFirestore store = FirebaseFirestore.instance;
+  TextEditingController fullName = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController contact = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController confirm = TextEditingController();
+  TextEditingController driving = TextEditingController();
+  TextEditingController NIC = TextEditingController();
+  TextEditingController address = TextEditingController();
+  int index = 1;
+  File? name;
+  bool obsecure = true, loading = false, updated = false;
+  var user;
   @override
-  Future<DocumentSnapshot> getdata()async{
-    String? uid =_auth.currentUser!.uid;
-    return await store
-        .collection("driver")
-        .doc(uid).get();
-  }
+  // Future<DocumentSnapshot> getdata() async {
+  //   // String? uid = _auth.currentUser!.uid;
+  //   return await store.collection("driver").doc(uid).get();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    String? pic ="_auth.currentUser!.photoURL";
-    if(index==1){
-      if(loading){
+    String? pic = "_auth.currentUser!.photoURL";
+    if (index == 1) {
+      if (loading) {
         return Scaffold(
-            body:  SafeArea(
-              child: Center(
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            )
-        );
+            body: SafeArea(
+          child: Center(
+            child: Container(
+              height: 100,
+              width: 100,
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ));
       }
       return FutureBuilder<List>(
-          future: Future.wait([getdata()]),
-          builder: (context,snapshot) {
-            if(snapshot.connectionState==ConnectionState.waiting){
-              return Scaffold(
-                  body:  SafeArea(
-                    child: Center(
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        child: CircularProgressIndicator(),
+          // future: Future.wait([getdata()]),
+          builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+              body: SafeArea(
+            child: Center(
+              child: Container(
+                height: 100,
+                width: 100,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ));
+        } else {
+          // user=snapshot.data![0];
+          return Scaffold(
+            backgroundColor: Color.fromARGB(245, 249, 249, 249),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Container(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
                       ),
-                    ),
-                  )
-              );
-            }else{
-              // user=snapshot.data![0];
-              return Scaffold(
-                backgroundColor: Color.fromARGB(245, 249, 249, 249),
-                body: SafeArea(
-                  child: SingleChildScrollView(
-                    child: Container(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 20,),
-                          CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.amber,
-                              foregroundImage: (pic==null)?AssetImage(
-                                  'assets/images/avatar.png'):NetworkImage(pic!) as ImageProvider
-                          ),
-                          SizedBox(height: 10,),
-                          OutlinedButton(onPressed: ()async{
-                            final picked =await Imagepic.pickImage(source: ImageSource.camera);
-                            name=File(picked!.path);
-                            FirebaseStorage ? storage=FirebaseStorage.instance;
-                            var stroeref=storage.ref().child("image/${_auth.currentUser!.uid}");
+                      CircleAvatar(
+                          radius: 80,
+                          backgroundColor: Colors.amber,
+                          foregroundImage: (pic == null)
+                              ? AssetImage('assets/images/avatar.png')
+                              : NetworkImage(pic!) as ImageProvider),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      OutlinedButton(
+                        onPressed: () async {
+                          final picked = await Imagepic.pickImage(
+                              source: ImageSource.camera);
+                          name = File(picked!.path);
+                          FirebaseStorage? storage = FirebaseStorage.instance;
+                          var stroeref = storage
+                              .ref()
+                              .child("image/${_auth.currentUser!.uid}");
+                          setState(() {
+                            loading = true;
+                          });
+                          if (name != null) {
+                            var upload = await stroeref.putFile(name!);
+                            String? completed =
+                                await upload.ref.getDownloadURL();
+                            await _auth.currentUser!.updatePhotoURL(completed);
+                            await store
+                                .collection('driver')
+                                .doc(_auth.currentUser!.uid)
+                                .update({'pic': completed});
+
+                            pic = completed;
                             setState(() {
-                              loading=true;
+                              loading = false;
                             });
-                            if(name!=null){
-                              var upload= await stroeref.putFile(name!);
-                              String ? completed= await upload.ref.getDownloadURL();
-                              await _auth.currentUser!.updatePhotoURL(completed);
-                              await store.collection('driver').doc(_auth.currentUser!.uid).update(
-                                  {
-                                    'pic':completed
-                                  });
-
-                              pic=completed;
-                              setState(() {
-                                loading=false;
-                              });
-
-                            }
-
-                          }, child: Text('Change Profile photo'),style: OutlinedButton.styleFrom(
-                            side: BorderSide(width: 2.0, color: Colors.amber),
-                          ),),
-                          SizedBox(height: 10,),
-                          Container(
-                            padding: EdgeInsets.all(16),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.0),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.2),
-                                    spreadRadius: 10,
-                                    blurRadius: 10,
-                                    offset: Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              padding: EdgeInsets.all(10),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Personal Details',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                                  SizedBox(height: 10,),
-                                  TextField(
-                                    controller: email,
-                                    decoration: InputDecoration(
-                                        hintText: "EMAIL"
-                                    ),
-
-                                  ),
-                                  SizedBox(height: 10,),
-                                  TextField(
-                                    controller: contact,
-                                    decoration: InputDecoration(
-                                        hintText:"CONTACT NO"
-                                    ),
-
-                                  ),
-                                  SizedBox(height: 10,),
-                                  TextField(
-                                    controller: address,
-                                    decoration: InputDecoration(
-                                        hintText:"ADDRESS"
-                                    ),
-
-                                  ),
-                                  SizedBox(height: 10,),
-                                  TextField(
-                                    controller: NIC,
-                                    decoration: InputDecoration(
-                                        hintText:"NIC"
-                                    ),
-
-                                  ),
-                                  SizedBox(height: 10,),
-
-                                  SizedBox(height: 10,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(onPressed: (){
-                                        setState(() {
-                                          index=2;
-                                        });
-                                      }, child: Text('Next',style: TextStyle(fontSize: 18),))
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                          }
+                        },
+                        child: Text('Change Profile photo'),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(width: 2.0, color: Colors.amber),
+                        ),
                       ),
-                    ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 10,
+                                blurRadius: 10,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Personal Details',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                controller: email,
+                                decoration:
+                                    InputDecoration(hintText: "Childs' name"),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                controller: contact,
+                                decoration:
+                                    InputDecoration(hintText: "Parents' name"),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                controller: address,
+                                decoration:
+                                    InputDecoration(hintText: "Home Address"),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                controller: NIC,
+                                decoration: InputDecoration(hintText: "School"),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                controller: NIC,
+                                decoration:
+                                    InputDecoration(hintText: "Contact no:"),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          index = 2;
+                                        });
+                                      },
+                                      child: Text(
+                                        'Next',
+                                        style: TextStyle(fontSize: 18),
+                                      ))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            }
-          }
-      );
-    }else{
-      if(loading){
-        return Scaffold(
-            body:  SafeArea(
-              child: Center(
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: CircularProgressIndicator(),
-                ),
               ),
-            )
-        );
-      }else{
+            ),
+          );
+        }
+      });
+    } else {
+      if (loading) {
+        return Scaffold(
+            body: SafeArea(
+          child: Center(
+            child: Container(
+              height: 100,
+              width: 100,
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ));
+      } else {
         return Scaffold(
           backgroundColor: Color.fromARGB(245, 249, 249, 249),
           body: SafeArea(
@@ -221,18 +246,33 @@ class _Parents_profileState extends State<Parents_profile> {
                   children: [
                     Row(
                       children: [
-                        IconButton(onPressed: (){
-                          Navigator.pop(context);
-                        }, icon: Icon(Icons.arrow_back,size: 30.0,)),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.2,),
-                        Text('Edit Profile',style: TextStyle(
-                            fontSize: 25
-                        ),),
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              size: 30.0,
+                            )),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                        ),
+                        Text(
+                          'Edit Profile',
+                          style: TextStyle(fontSize: 25),
+                        ),
                       ],
                     ),
-                    SizedBox(height: 10,),
-                    Text(error,style: TextStyle(color: Colors.redAccent),),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      error,
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Container(
                       padding: EdgeInsets.all(16),
                       child: Container(
@@ -254,7 +294,9 @@ class _Parents_profileState extends State<Parents_profile> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                             TextField(
                               controller: password,
                               obscureText: obsecure,
@@ -270,12 +312,11 @@ class _Parents_profileState extends State<Parents_profile> {
                                       ? Icons.visibility_outlined
                                       : Icons.visibility_off_outlined),
                                 ),
-
-
                               ),
-
                             ),
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                             TextField(
                               controller: confirm,
                               obscureText: obsecure,
@@ -291,90 +332,117 @@ class _Parents_profileState extends State<Parents_profile> {
                                       ? Icons.visibility_outlined
                                       : Icons.visibility_off_outlined),
                                 ),
-
-
                               ),
-
                             ),
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                TextButton(onPressed: (){
-                                  setState(() {
-                                    index=1;
-                                  });
-                                }, child: Text('Back',style: TextStyle(fontSize: 18),)),
-                                TextButton(onPressed: ()async{
-                                  setState(() {
-                                    loading=true;
-                                  });
-                                  Map <String,dynamic> newdata =new Map();
-                                  if(contact.text.trim().isNotEmpty){
-                                    newdata['Contact_No']=contact.text.trim();
-                                  }
-                                  if(driving.text.trim().isNotEmpty){
-                                    newdata['license']=driving.text.trim();
-                                  }
-                                  if(address.text.trim().isNotEmpty){
-                                    newdata['address']=address.text.trim();
-                                  }
-                                  if(NIC.text.trim().isNotEmpty){
-                                    newdata['NIC']=NIC.text.trim();
-                                  }
-                                  try{
-                                    await store.collection('driver').doc(_auth.currentUser!.uid).update(newdata);
-                                    if(email.text.trim().isNotEmpty){
-                                      try{
-                                        _auth.currentUser!.updateEmail(email.text.trim());
-                                      }catch(e){
-                                        setState(() {
-                                          error='Invalid Email';
-                                        });
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        index = 1;
+                                      });
+                                    },
+                                    child: Text(
+                                      'Back',
+                                      style: TextStyle(fontSize: 18),
+                                    )),
+                                TextButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Map<String, dynamic> newdata = new Map();
+                                      if (contact.text.trim().isNotEmpty) {
+                                        newdata['Contact_No'] =
+                                            contact.text.trim();
                                       }
-                                      newdata['email']=email.text.trim();
-                                    }
+                                      if (driving.text.trim().isNotEmpty) {
+                                        newdata['license'] =
+                                            driving.text.trim();
+                                      }
+                                      if (address.text.trim().isNotEmpty) {
+                                        newdata['address'] =
+                                            address.text.trim();
+                                      }
+                                      if (NIC.text.trim().isNotEmpty) {
+                                        newdata['NIC'] = NIC.text.trim();
+                                      }
+                                      try {
+                                        await store
+                                            .collection('driver')
+                                            .doc(_auth.currentUser!.uid)
+                                            .update(newdata);
+                                        if (email.text.trim().isNotEmpty) {
+                                          try {
+                                            _auth.currentUser!
+                                                .updateEmail(email.text.trim());
+                                          } catch (e) {
+                                            setState(() {
+                                              error = 'Invalid Email';
+                                            });
+                                          }
+                                          newdata['email'] = email.text.trim();
+                                        }
 
-                                    final cred = EmailAuthProvider.credential(
-                                        email: _auth.currentUser!.email!, password: password.text.trim());
-                                    if(confirm.text.trim().isNotEmpty){
-                                      await _auth.currentUser!.reauthenticateWithCredential(cred).then((value)async{
-                                        try{
-                                          await _auth.currentUser!.updatePassword(confirm.text.trim());
-                                          updated=true;
-                                        }catch(e){
-                                          setState(() {
-                                            error ='Password invalid';
+                                        final cred =
+                                            EmailAuthProvider.credential(
+                                                email:
+                                                    _auth.currentUser!.email!,
+                                                password: password.text.trim());
+                                        if (confirm.text.trim().isNotEmpty) {
+                                          await _auth.currentUser!
+                                              .reauthenticateWithCredential(
+                                                  cred)
+                                              .then((value) async {
+                                            try {
+                                              await _auth.currentUser!
+                                                  .updatePassword(
+                                                      confirm.text.trim());
+                                              updated = true;
+                                            } catch (e) {
+                                              setState(() {
+                                                error = 'Password invalid';
+                                              });
+                                            }
                                           });
                                         }
-                                      });
-                                    }
-                                    if(confirm.text.trim().isNotEmpty&&updated){
-                                      await _auth.signOut();
-                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>logindriver()), (route) => false);
-                                    }else {
-                                      Navigator.pushAndRemoveUntil(context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  driverhome()), (
-                                              route) => false);
-                                    }
-                                  }catch(e){
-                                    setState(() {
-                                      error='Invalid Details';
-                                    });
-                                  }
-
-
-                                }, child: Text('Save',style: TextStyle(fontSize: 18),))
+                                        if (confirm.text.trim().isNotEmpty &&
+                                            updated) {
+                                          await _auth.signOut();
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      logindriver()),
+                                              (route) => false);
+                                        } else {
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      driverhome()),
+                                              (route) => false);
+                                        }
+                                      } catch (e) {
+                                        setState(() {
+                                          error = 'Invalid Details';
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                      'Save',
+                                      style: TextStyle(fontSize: 18),
+                                    ))
                               ],
                             ),
-
                           ],
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -383,6 +451,5 @@ class _Parents_profileState extends State<Parents_profile> {
         );
       }
     }
-
   }
 }
