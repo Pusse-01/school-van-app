@@ -35,14 +35,16 @@ class accountselect extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          AutoSizeText(
                             'Lets go...',
                             style: TextStyle(
-                              fontSize: 60,
+                              // fontSize: 60,
                               fontFamily: 'Cherry Cream Soda',
                               color: Color.fromARGB(255, 245, 246, 247),
                               fontWeight: FontWeight.w700,
                             ),
+                            minFontSize: 40,
+                            maxLines: 1,
                           ),
                         ],
                       ),
@@ -68,7 +70,7 @@ class accountselect extends StatelessWidget {
                         child: AutoSizeText(
                           'Parent app allows them to track the school bus location and get real-time notifications regarding the students\' location...',
                           style: TextStyle(
-                            fontSize: 20.0,
+                            // fontSize: 20.0,
                             color: Colors.white,
                           ),
                           maxLines: 6,

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 // import 'package:timelines/timelines.dart';
@@ -44,7 +45,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
               children: [
                 Container(
                   margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                  height: MediaQuery.of(context).size.height * 0.12,
+                  // height: MediaQuery.of(context).size.height * 0.12,
                   width: MediaQuery.of(context).size.width * 0.40,
                   decoration: const BoxDecoration(
                     color: Color(0xff4E8CDD),
@@ -56,10 +57,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Row(children: const [
-                          Text(
+                          AutoSizeText(
                             "Trip 1",
+                            maxLines: 1,
+                            maxFontSize: 16,
                             style: TextStyle(
-                              fontSize: 16.0,
+                              // fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -75,18 +78,22 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
-                              Text(
+                              AutoSizeText(
                                 "Start",
+                                maxLines: 1,
+                                maxFontSize: 16,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  // fontSize: 16.0,
                                   // fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              Text(
+                              AutoSizeText(
                                 "06:30 AM",
+                                maxLines: 1,
+                                maxFontSize: 16,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  // fontSize: 16.0,
                                   // fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
@@ -102,18 +109,22 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
-                              Text(
+                              AutoSizeText(
                                 "End",
+                                maxLines: 1,
+                                maxFontSize: 16,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  // fontSize: 16.0,
                                   // fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              Text(
+                              AutoSizeText(
                                 "07:30 AM",
+                                maxLines: 1,
+                                maxFontSize: 16,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  // fontSize: 16.0,
                                   // fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
@@ -125,7 +136,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                 ),
                 Container(
                   margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                  height: MediaQuery.of(context).size.height * 0.12,
+                  // height: MediaQuery.of(context).size.height * 0.12,
                   width: MediaQuery.of(context).size.width * 0.40,
                   decoration: const BoxDecoration(
                     color: Color(0xff4E8CDD),
@@ -137,10 +148,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Row(children: const [
-                          Text(
+                          AutoSizeText(
                             "Trip 2",
+                            maxLines: 1,
+                            maxFontSize: 16,
                             style: TextStyle(
-                              fontSize: 16.0,
+                              // fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -156,18 +169,22 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
-                              Text(
+                              AutoSizeText(
                                 "Start",
+                                maxLines: 1,
+                                maxFontSize: 16,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  // fontSize: 16.0,
                                   // fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              Text(
+                              AutoSizeText(
                                 "12:30 PM",
+                                maxLines: 1,
+                                maxFontSize: 16,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  // fontSize: 16.0,
                                   // fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
@@ -183,18 +200,22 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
-                              Text(
+                              AutoSizeText(
                                 "End",
+                                maxLines: 1,
+                                maxFontSize: 16,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  // fontSize: 16.0,
                                   // fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              Text(
+                              AutoSizeText(
                                 "14:30 PM",
+                                maxLines: 1,
+                                maxFontSize: 16,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  // fontSize: 16.0,
                                   // fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
@@ -246,7 +267,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
             ),
             Container(
               margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 0.0),
-              height: MediaQuery.of(context).size.height * 0.4,
+              // height: MediaQuery.of(context).size.height * 0.4,
               width: MediaQuery.of(context).size.width * 0.9,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
@@ -263,10 +284,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         SizedBox(
                           width: 10.0,
                         ),
-                        Text(
+                        AutoSizeText(
                           "Mr. Perera",
+                          maxLines: 1,
+                          maxFontSize: 16,
                           style: TextStyle(
-                            fontSize: 16.0,
+                            // fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -286,10 +309,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         SizedBox(
                           width: 10.0,
                         ),
-                        Text(
+                        AutoSizeText(
                           "B4628933",
+                          maxLines: 1,
+                          maxFontSize: 16,
                           style: TextStyle(
-                            fontSize: 16.0,
+                            // fontSize: 16.0,
                             // fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -309,10 +334,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         SizedBox(
                           width: 10.0,
                         ),
-                        Text(
+                        AutoSizeText(
                           "CE 2349",
+                          maxLines: 1,
+                          maxFontSize: 16,
                           style: TextStyle(
-                            fontSize: 16.0,
+                            // fontSize: 16.0,
                             // fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -332,10 +359,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         SizedBox(
                           width: 10.0,
                         ),
-                        Text(
+                        AutoSizeText(
                           "070 4575691",
+                          maxLines: 1,
+                          maxFontSize: 16,
                           style: TextStyle(
-                            fontSize: 16.0,
+                            // fontSize: 16.0,
                             // fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -355,10 +384,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         SizedBox(
                           width: 10.0,
                         ),
-                        Text(
+                        AutoSizeText(
                           "20 Seats available",
+                          maxLines: 1,
+                          maxFontSize: 16,
                           style: TextStyle(
-                            fontSize: 16.0,
+                            // fontSize: 16.0,
                             // fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -378,10 +409,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                         SizedBox(
                           width: 10.0,
                         ),
-                        Text(
+                        AutoSizeText(
                           "355/2 A ,Pirivena road ,Mount Lavenia",
+                          maxLines: 2,
+                          maxFontSize: 16,
                           style: TextStyle(
-                            fontSize: 16.0,
+                            // fontSize: 16.0,
                             // fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -431,10 +464,12 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(16.0, 4.0, 12.0, 0.0),
-                  child: Text(
+                  child: AutoSizeText(
                     "Status",
+                    maxLines: 1,
+                    maxFontSize: 16,
                     style: TextStyle(
-                      fontSize: 16.0,
+                      // fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
