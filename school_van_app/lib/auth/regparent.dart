@@ -1,23 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/screens/parents/parents_home.dart';
 
+import '../services/database.dart';
+
 class regparent extends StatefulWidget {
-  const regparent({Key? key}) : super(key: key);
+  final user;
+  const regparent({Key? key, required this.user}) : super(key: key);
 
   @override
   State<regparent> createState() => _regparentState();
 }
 
 class _regparentState extends State<regparent> {
-  TextEditingController name = TextEditingController();
-  TextEditingController email = TextEditingController();
+  TextEditingController firstName = TextEditingController();
+  TextEditingController lastName = TextEditingController();
   TextEditingController contact = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController confirm = TextEditingController();
-  TextEditingController driving = TextEditingController();
-  TextEditingController NIC = TextEditingController();
+  TextEditingController school = TextEditingController();
   TextEditingController address = TextEditingController();
   bool obsecure = true;
   @override
@@ -58,7 +59,7 @@ class _regparentState extends State<regparent> {
                       height: 10,
                     ),
                     TextField(
-                      controller: name,
+                      controller: firstName,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
@@ -66,7 +67,7 @@ class _regparentState extends State<regparent> {
                           contentPadding: EdgeInsets.all(15),
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: "Name",
+                          hintText: "First Name",
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 15.0)),
                     ),
@@ -74,7 +75,7 @@ class _regparentState extends State<regparent> {
                       height: 10,
                     ),
                     TextField(
-                      controller: email,
+                      controller: lastName,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
@@ -82,29 +83,14 @@ class _regparentState extends State<regparent> {
                           contentPadding: EdgeInsets.all(15),
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: "Email",
+                          hintText: "Last Name",
                           hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15.0)),
+                          TextStyle(color: Colors.grey, fontSize: 15.0)),
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    TextField(
-                      controller: contact,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          contentPadding: EdgeInsets.all(15),
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: "Contact number",
-                          hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15.0)),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+
                     TextField(
                       controller: address,
                       decoration: InputDecoration(
@@ -122,67 +108,36 @@ class _regparentState extends State<regparent> {
                       height: 10,
                     ),
                     TextField(
-                        controller: password,
-                        obscureText: obsecure,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            contentPadding: EdgeInsets.all(15),
-                            fillColor: Colors.white,
-                            filled: true,
-                            hintText: "Password",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 15.0),
-                            suffix: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  obsecure = !obsecure;
-                                });
-                              },
-                              child: Icon(
-                                (obsecure)
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                size: 20,
-                              ),
-                            ))),
-                    SizedBox(
-                      height: 10,
+                      controller: school,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          contentPadding: EdgeInsets.all(15),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: "School",
+                          hintStyle:
+                          TextStyle(color: Colors.grey, fontSize: 15.0)),
                     ),
-                    TextField(
-                        controller: confirm,
-                        obscureText: obsecure,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            contentPadding: EdgeInsets.all(15),
-                            fillColor: Colors.white,
-                            filled: true,
-                            hintText: "Confirm Password",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 15.0),
-                            suffix: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  obsecure = !obsecure;
-                                });
-                              },
-                              child: Icon(
-                                (obsecure)
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                size: 20,
-                              ),
-                            ))),
                     SizedBox(
                       height: 10,
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          CollectionReference parent = FirebaseFirestore.instance.collection('parent');
+                          await parent.doc(widget.user.uid).set(
+                              {
+                                'uid':widget.user.uid,
+                                'type':2,
+                                'firstname': firstName.text,
+                                'lastname':lastName.text,
+                                'Contact_No': widget.user.phoneNumber.toString(),
+                                "school":school.text
+                              }
+                          );
                           Navigator.push(
                               context,
                               MaterialPageRoute(
