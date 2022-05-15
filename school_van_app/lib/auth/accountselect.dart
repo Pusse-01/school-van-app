@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:school_van_app/auth/regdriver.dart';
 import 'package:school_van_app/auth/regparent.dart';
+import 'package:school_van_app/auth/verifyPhoneParent.dart';
 
 class accountselect extends StatelessWidget {
   const accountselect({Key? key}) : super(key: key);
@@ -138,7 +139,7 @@ class accountselect extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => regparent()));
+                                builder: (context) => ParentVerify()));
                       },
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.2,
