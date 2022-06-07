@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:school_van_app/auth/logindriver.dart';
+import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/auth/regdriver.dart';
 import 'package:school_van_app/auth/regparent.dart';
+<<<<<<< Updated upstream
 import 'package:school_van_app/auth/verifyPhoneParent.dart';
+=======
+>>>>>>> Stashed changes
 
 class accountselect extends StatelessWidget {
   const accountselect({Key? key}) : super(key: key);
@@ -89,7 +94,7 @@ class accountselect extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => regdriver()));
+                                builder: (context) => logindriver()));
                       },
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.2,
@@ -139,7 +144,11 @@ class accountselect extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
+<<<<<<< Updated upstream
                                 builder: (context) => ParentVerify()));
+=======
+                                builder: (context) => parentlogin()));
+>>>>>>> Stashed changes
                       },
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.2,

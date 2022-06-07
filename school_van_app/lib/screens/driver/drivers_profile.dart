@@ -5,9 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:school_van_app/auth/logindriver.dart';
+import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/screens/driver/driverhome.dart';
+
+import '../../auth/accountselect.dart';
 
 class Driver_profile extends StatefulWidget {
   const Driver_profile({Key? key}) : super(key: key);
@@ -33,11 +37,6 @@ class _Driver_profileState extends State<Driver_profile> {
   File? name;
   bool obsecure = true, loading = false, updated = false;
   var user;
-  @override
-  Future<DocumentSnapshot> getdata() async {
-    String? uid = _auth.currentUser!.uid;
-    return await store.collection("driver").doc(uid).get();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +54,10 @@ class _Driver_profileState extends State<Driver_profile> {
           ),
         ));
       }
-      return FutureBuilder<List>(
-          future: Future.wait([getdata()]),
+      return FutureBuilder<DocumentSnapshot>(
+          future: store.collection("driver").doc(_auth.currentUser!.uid).get(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting|| snapshot.data!.data()==null) {
               return Scaffold(
                   body: SafeArea(
                 child: Center(
@@ -70,14 +69,42 @@ class _Driver_profileState extends State<Driver_profile> {
                 ),
               ));
             } else {
-              user = snapshot.data![0];
+              user = snapshot.data!.data();
               return Scaffold(
                 backgroundColor: Color.fromARGB(245, 249, 249, 249),
                 body: SafeArea(
                   child: SingleChildScrollView(
                     child: Container(
                       child: Column(
+
+
                         children: [
+                         Row(
+                           mainAxisAlignment: MainAxisAlignment.start,
+                           children: [
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child:  Text(
+                                "Profile",
+                                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,color: Colors.blue[900]),
+                              ),
+                            ),
+                             Expanded(child: SizedBox()),
+                             ElevatedButton(
+                                 onPressed: () async {
+                                   FirebaseAuth _auth = FirebaseAuth.instance;
+                                   if(FlutterBackground.isBackgroundExecutionEnabled){
+                                     await FlutterBackground.disableBackgroundExecution();
+                                   }
+                                   await _auth.signOut();
+
+                                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>accountselect()), (route) => false);
+                                   setState(() {});
+                                 },
+                                 child: Text('Sign Out'),style: ElevatedButton.styleFrom(primary: Colors.red),),
+                             SizedBox(width: 10,),
+                           ],
+                         ),
                           SizedBox(
                             height: 20,
                           ),
@@ -128,6 +155,7 @@ class _Driver_profileState extends State<Driver_profile> {
                           SizedBox(
                             height: 10,
                           ),
+
                           Container(
                             padding: EdgeInsets.all(16),
                             child: Container(
@@ -245,25 +273,6 @@ class _Driver_profileState extends State<Driver_profile> {
               child: Container(
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(
-                              Icons.arrow_back,
-                              size: 30.0,
-                            )),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.2,
-                        ),
-                        Text(
-                          'Edit Profile',
-                          style: TextStyle(fontSize: 25),
-                        ),
-                      ],
-                    ),
                     SizedBox(
                       height: 10,
                     ),

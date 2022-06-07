@@ -23,16 +23,15 @@ class databaseService{
         }
     );
   }
-  Future ? setstudentdata(String ?firstname,String ? lastname, String ?Phoneno, String ?email,List<String>classes,String school) async {
+  Future ? setparentdata(String ? name, String ?Phoneno, String ?email,String address) async {
     return await parent.doc(uid).set(
         {
           'uid':uid,
-          'type':2,
-          'firstname': firstname,
-          'lastname':lastname,
+          'name': name,
           'Contact_No': Phoneno,
           'Email': email,
-          "school":school
+          "address":address,
+
         }
     );
   }

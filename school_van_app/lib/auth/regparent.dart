@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/screens/parents/parents_home.dart';
+import 'package:school_van_app/wrappers/parentlocationwrapper.dart';
+
+import '../services/authentication.dart';
 
 class regparent extends StatefulWidget {
   const regparent({Key? key}) : super(key: key);
@@ -16,17 +20,24 @@ class _regparentState extends State<regparent> {
   TextEditingController contact = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirm = TextEditingController();
-  TextEditingController driving = TextEditingController();
-  TextEditingController NIC = TextEditingController();
   TextEditingController address = TextEditingController();
   bool obsecure = true;
+  bool loading =false;
+  String error ='';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ConstrainedBox(
         constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height,
-          minWidth: MediaQuery.of(context).size.width,
+          minHeight: MediaQuery
+              .of(context)
+              .size
+              .height,
+          minWidth: MediaQuery
+              .of(context)
+              .size
+              .width,
         ),
         child: Container(
           child: SafeArea(
@@ -50,13 +61,20 @@ class _regparentState extends State<regparent> {
                       height: 20,
                     ),
                     Container(
-                        height: MediaQuery.of(context).size.height * 0.25,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.25,
                         child: Image(
                           image: AssetImage('assets/images/parent_auth.png'),
                         )),
                     SizedBox(
                       height: 10,
                     ),
+            Text(error,style: TextStyle(color: Colors.redAccent),),
+            SizedBox(
+              height: 10,
+            ),
                     TextField(
                       controller: name,
                       decoration: InputDecoration(
@@ -68,7 +86,7 @@ class _regparentState extends State<regparent> {
                           fillColor: Colors.white,
                           hintText: "Name",
                           hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15.0)),
+                          TextStyle(color: Colors.grey, fontSize: 15.0)),
                     ),
                     SizedBox(
                       height: 10,
@@ -84,7 +102,7 @@ class _regparentState extends State<regparent> {
                           fillColor: Colors.white,
                           hintText: "Email",
                           hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15.0)),
+                          TextStyle(color: Colors.grey, fontSize: 15.0)),
                     ),
                     SizedBox(
                       height: 10,
@@ -100,7 +118,7 @@ class _regparentState extends State<regparent> {
                           fillColor: Colors.white,
                           hintText: "Contact number",
                           hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15.0)),
+                          TextStyle(color: Colors.grey, fontSize: 15.0)),
                     ),
                     SizedBox(
                       height: 10,
@@ -116,7 +134,7 @@ class _regparentState extends State<regparent> {
                           fillColor: Colors.white,
                           hintText: "Address",
                           hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15.0)),
+                          TextStyle(color: Colors.grey, fontSize: 15.0)),
                     ),
                     SizedBox(
                       height: 10,
@@ -133,7 +151,7 @@ class _regparentState extends State<regparent> {
                             filled: true,
                             hintText: "Password",
                             hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 15.0),
+                            TextStyle(color: Colors.grey, fontSize: 15.0),
                             suffix: InkWell(
                               onTap: () {
                                 setState(() {
@@ -162,7 +180,7 @@ class _regparentState extends State<regparent> {
                             filled: true,
                             hintText: "Confirm Password",
                             hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 15.0),
+                            TextStyle(color: Colors.grey, fontSize: 15.0),
                             suffix: InkWell(
                               onTap: () {
                                 setState(() {
@@ -180,14 +198,50 @@ class _regparentState extends State<regparent> {
                       height: 10,
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.7,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Parent_Home()));
-                        },
+                          onPressed: () async {
+                            dynamic result;
+                            authService login = authService();
+                            if (email.text.trim() != "" &&
+                                password.text.trim() != ""&&contact.text.trim()!=''&& address.text.trim()!=''&&confirm.text.trim()==password.text.trim()) {
+                              setState(() {
+                                loading = true;
+                              });
+                              result = await login.registerwithEmailparent(
+                                  email.text.trim(), password.text.trim(),name.text,contact.text.trim(),address.text.trim());
+                            }else if(confirm.text.trim()!=password.text.trim()){
+                              setState((){
+                                error ='Password not Matching';
+                              });
+                            }
+                            else {
+                              setState(() {
+                                error = "Fill all fields";
+                              });
+                            }
+                            setState(() {
+                              loading = false;
+                            });
+                            if (result != null) {
+                              FirebaseFirestore store = FirebaseFirestore
+                                  .instance;
+                              DocumentSnapshot details = await store.collection(
+                                  'parent').doc(result.uid).get();
+                              Map data =details.data() as Map;
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      parentwrapper(data:data ,)
+                                ),
+                                    (route) => false,
+                              );
+                            }
+                          },
                         child: Text('Sign Up'),
                         style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.all(16),
@@ -211,12 +265,12 @@ class _regparentState extends State<regparent> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => logindriver()));
+                                      builder: (context) => parentlogin()));
                             },
                             child: Text(
                               "Log In",
                               style:
-                                  TextStyle(color: Colors.blue, fontSize: 18),
+                              TextStyle(color: Colors.blue, fontSize: 18),
                             ))
                       ],
                     ),

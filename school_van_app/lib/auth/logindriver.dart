@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:school_van_app/auth/accountselect.dart';
+import 'package:school_van_app/auth/regdriver.dart';
 import 'package:school_van_app/loadingscreen.dart';
 import 'package:school_van_app/services/authentication.dart';
 
@@ -139,6 +140,10 @@ class _logindriverState extends State<logindriver> {
                                 (route) => false,
                               );
                               setState(() {
+                                loading = false;
+                              });
+                            }else{
+                              setState(() {
                                 error = "Log in Failed";
                                 loading = false;
                               });
@@ -167,7 +172,7 @@ class _logindriverState extends State<logindriver> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => accountselect()));
+                                        builder: (context) => regdriver()));
                               },
                               child: Text(
                                 "Sign Up",

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:school_van_app/screens/driver/childs_info.dart';
 import 'package:school_van_app/screens/driver/driver_dashboard.dart';
 import 'package:school_van_app/screens/driver/driverhomefile.dart';
@@ -28,9 +29,15 @@ class _driverhomeState extends State<driverhome> {
     });
   }
 
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff1f3fa),
       body: Container(
           child: <Widget>[
         driversH(
@@ -60,7 +67,7 @@ class _driverhomeState extends State<driverhome> {
             backgroundColor: Colors.indigo[500],
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.airport_shuttle_outlined),
+            icon: Icon(Icons.people_outline),
             label: "Kids",
             backgroundColor: Colors.indigo[600],
           ),

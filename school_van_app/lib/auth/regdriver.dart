@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/locationservice/mapservice.dart';
-import 'package:school_van_app/models/location.dart';
 import 'package:school_van_app/services/authentication.dart';
 
-import '../screens/driver/driverhome.dart';
 
 class regdriver extends StatefulWidget {
   const regdriver({Key? key}) : super(key: key);
@@ -26,7 +24,6 @@ class _regdriverState extends State<regdriver> {
   String error = "";
   @override
   Widget build(BuildContext context) {
-    print(vanlocate().current);
     return Scaffold(
       body: ConstrainedBox(
         constraints: BoxConstraints(

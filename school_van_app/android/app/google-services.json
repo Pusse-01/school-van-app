@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1097339278014-k3m9bfg1eluft230i1bd9n96umoeh6d4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.school_van_app",
+            "certificate_hash": "c0bbd72dc5cbd05293b49ba110ccbebb04f9b292"
+          }
+        },
+        {
           "client_id": "1097339278014-8sssi3s0cnel0uvv0okd1h9be787tbf9.apps.googleusercontent.com",
           "client_type": 3
         }

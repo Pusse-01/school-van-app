@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:school_van_app/auth/accountselect.dart';
+import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/wrappers/authwrapper.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,15 +15,24 @@ class InitState extends State<SplashScreen> {
     super.initState();
     startTimer();
   }
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
   void startTimer() {
-    var duration = Duration(seconds: 5);
-    new Timer(duration, detailsScreen1Route);
+    if(mounted){
+      var duration = Duration(seconds: 5);
+      new Timer(duration, detailsScreen1Route);
+    }
   }
 
   detailsScreen1Route() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => authwrapper()));
+    if(mounted){
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => accountselect()));
+    }
   }
 
   @override

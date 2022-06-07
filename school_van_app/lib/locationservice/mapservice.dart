@@ -3,15 +3,13 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:ui' as ui;
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:school_van_app/auth/accountselect.dart';
 
 class locationfind extends StatefulWidget {
@@ -37,8 +35,41 @@ class _locationfindState extends State<locationfind> {
   List<LatLng> polylineCoordinates = [];
   Map<PolylineId, Polyline> polylines = {};
   Set<Marker> marks = {};
-  Uint8List? markerIcon;
+  Uint8List? markerIcon,markerIconuser;
   bool started = false;
+
+  void backgroundservice()async{
+    final androidConfig = FlutterBackgroundAndroidConfig(
+        notificationTitle: "School Van App",
+        notificationText: "App is Running",
+        notificationImportance: AndroidNotificationImportance.Default,
+        notificationIcon: AndroidResource(
+            name: 'background_icon',
+            defType: 'drawable'), // Default is ic_launcher from folder mipmap
+        enableWifiLock: false);
+    bool success =
+    await FlutterBackground.initialize(androidConfig: androidConfig);
+    await FlutterBackground.enableBackgroundExecution();
+
+  }
+
+  void getlocations ()async{
+    QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
+    List students = data.docs;
+    students.forEach((element) async{
+     DocumentSnapshot d =await store.collection('parent').doc(element.get('parentid')).get();
+     marks.add(Marker(
+         markerId: MarkerId('${d.get('name')}'),
+         icon: BitmapDescriptor.fromBytes(markerIconuser!),
+         position: LatLng(d.get('location')['lat'], d.get('location')['lon']),
+         infoWindow: InfoWindow(
+           title: d.get('name'),
+
+         )
+
+     ),);
+    });
+  }
 
   void getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -48,6 +79,16 @@ class _locationfindState extends State<locationfind> {
     markerIcon = (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
         .buffer
         .asUint8List();
+  }
+  getBytesFromAssetforuser(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    markerIconuser =
+        (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+            .buffer
+            .asUint8List();
   }
 
   @override
@@ -68,8 +109,10 @@ class _locationfindState extends State<locationfind> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getBytesFromAsset('assets/images/mapbus.png', 150);
+    getBytesFromAsset('assets/images/mapbus.png', 75);
+    getBytesFromAssetforuser('assets/images/user_location.png', 75);
     locationservice();
+    getlocations();
     getdata();
   }
 
@@ -100,14 +143,7 @@ class _locationfindState extends State<locationfind> {
                         fontWeight: FontWeight.bold),
                   ),
                   Expanded(child: SizedBox()),
-                  TextButton(
-                      onPressed: () async {
-                        FirebaseAuth _auth = FirebaseAuth.instance;
-                        await _auth.signOut();
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>accountselect()), (route) => false);
-                        setState(() {});
-                      },
-                      child: Text('Sign Out'))
+
                 ],
               ),
               Container(
@@ -133,11 +169,24 @@ class _locationfindState extends State<locationfind> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (!started) {
+                          backgroundservice();
                           await store
                               .collection('location')
                               .doc(_auth.currentUser!.uid)
                               .set({'status': true, 'corrds': {}});
                         } else {
+                          await FlutterBackground.disableBackgroundExecution();
+                          QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
+                          List students = data.docs;
+                          students.forEach((element) async{
+                            await store.collection('children').doc(element.id).update(
+                                {
+                                  'notifications':{},
+                                  'dropped':false,
+                                  'picked_up':false,
+
+                                });
+                          });
                           await store
                               .collection('location')
                               .doc(_auth.currentUser!.uid)
@@ -180,6 +229,24 @@ class _locationfindState extends State<locationfind> {
     }
 
     current = await Geolocator.getCurrentPosition();
+    setState(() {
+      marks.add(
+        Marker(
+            markerId: MarkerId('My location'),
+            icon: BitmapDescriptor.fromBytes(markerIcon!),
+            position: LatLng(current!.latitude, current!.longitude),
+            infoWindow: InfoWindow(
+              title: 'Your Location',
+
+            )
+
+        ),
+      );
+    });
+   if(mounted){
+     control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+         target: LatLng(current!.latitude, current!.longitude), zoom: 16)));
+   }
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .distinct()
         .listen((event) async {
@@ -189,15 +256,24 @@ class _locationfindState extends State<locationfind> {
       setState(() {
         current = event;
         initital = LatLng(event.latitude, event.longitude);
-        marks.clear();
+        for(var i in marks){
+
+          if(i.markerId==MarkerId('My location')){
+            print(i.markerId);
+            marks.remove(i);
+            break;
+          }
+        }
         marks.add(
           Marker(
-              markerId: MarkerId('current'),
+              markerId: MarkerId('My location'),
               icon: BitmapDescriptor.fromBytes(markerIcon!),
               position: LatLng(current!.latitude, current!.longitude)),
         );
-        control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(event.latitude, event.longitude), zoom: 20)));
+       if(mounted){
+         control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+             target: LatLng(event.latitude, event.longitude), zoom: 16)));
+       }
       });
       if (started) {
         await store.collection('location').doc(_auth.currentUser!.uid).update({
