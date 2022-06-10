@@ -9,9 +9,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:ui' as ui;
 
+import '../../services/notifications.dart';
+
 class Parents_map extends StatefulWidget {
-  final markerdriver,markeruser;
-  const Parents_map({Key? key,this.markerdriver,this.markeruser}) : super(key: key);
+  final markerdriver,markeruser,driverids,notified,change;
+  const Parents_map({Key? key,this.markerdriver,this.markeruser,this.driverids,this.notified,this.change}) : super(key: key);
 
   @override
   State<Parents_map> createState() => _Parents_mapState();
@@ -23,7 +25,7 @@ class _Parents_mapState extends State<Parents_map> {
   FirebaseFirestore store = FirebaseFirestore.instance;
   LocationSettings locationSettings = LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 1);
   BitmapDescriptor? customIcon;
-  Position? current;
+  LatLng ?current;
   String? error;
   LatLng? initital = LatLng(0, 0);
   GoogleMapController? control;
@@ -67,7 +69,6 @@ class _Parents_mapState extends State<Parents_map> {
                   children: [
                     Row(
                       children: [
-
                         Expanded(child:Container(
                           padding: EdgeInsets.all(8),
                           child: Text(
@@ -80,19 +81,53 @@ class _Parents_mapState extends State<Parents_map> {
                         )),
                       ],
                     ),
-                    Container(
-                        child: Expanded(
-                          child: GoogleMap(
-                            initialCameraPosition:
-                            CameraPosition(target: initital!, zoom: 16),
-                            onMapCreated: (GoogleMapController ctrl) {
-                              control = ctrl;
+                    StreamBuilder<QuerySnapshot>(stream:store.collection('location').where(FieldPath.documentId,whereIn:widget.driverids ).snapshots(),builder: (context,locations){
+                      if(locations.connectionState!=ConnectionState.waiting){
+                        locations.data!.docs.forEach((element) {
+                          for(var i in marks){
+                            if(i.markerId==MarkerId('${element.id}')){
+                              marks.remove(i);
+                              break;
+                            }
+                          }
+                          String time ='-';
 
-                            },
-                            markers: marks,
-                            polylines: Set<Polyline>.of(polylines.values),
-                          ),
-                        )),
+                          if(element.get('speed')!=0 &&element.get('speed')!=null&&current?.longitude!=null){
+                            double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
+                            time =(((distance/element.get('speed'))/60).toInt()).toString();
+                            if(int.parse(time)<=5&&!widget.notified){
+                              widget.change();
+                              NotificationService.shownotification(title: '${element.get('name')}',body:'I\'m Less than 5 min away',payload: 'pick up  notification' );
+                            }
+
+                          }
+                          marks.add(Marker(
+                              markerId: MarkerId('${element.id}'),
+                              icon: BitmapDescriptor.fromBytes(widget.markerdriver!),
+                              position: LatLng(element.get('corrds')['lat'], element.get('corrds')['long']),
+                              infoWindow: InfoWindow(
+                                title: '${element.get('name')}',
+                                snippet: time +' min',
+
+                              )
+
+                          ));
+                        });
+                      }
+                      return Expanded(
+                          child: Container(
+                            child: GoogleMap(
+                              initialCameraPosition:
+                              CameraPosition(target: initital!, zoom: 16),
+                              onMapCreated: (GoogleMapController ctrl) {
+                                control = ctrl;
+
+                              },
+                              markers: marks,
+                              polylines: Set<Polyline>.of(polylines.values),
+                            ),
+                          ));
+                    })
                   ],
                 ),
               ),
@@ -112,47 +147,41 @@ class _Parents_mapState extends State<Parents_map> {
         });
       }
     }
-    current = await Geolocator.getCurrentPosition();
-   setState(() {
-     marks.add(
-       Marker(
-           markerId: MarkerId('My location'),
-           icon: BitmapDescriptor.fromBytes(widget.markeruser!),
-           position: LatLng(current!.latitude, current!.longitude),
+  DocumentSnapshot d1= await store.collection('parent').doc(_auth.currentUser!.uid).get();
+    current =LatLng(d1.get('location')['lat'], d1.get('location')['lon']);
+  marks.add(
+    Marker(
+        markerId: MarkerId('My location'),
+        icon: BitmapDescriptor.fromBytes(widget.markeruser!),
+        position: LatLng(d1.get('location')['lat'], d1.get('location')['lon']),
+        infoWindow: InfoWindow(
+          title: 'Your Location',
 
-       ),
-     );
-   });
+        )
+
+    ),
+  );
+  if(mounted){
     control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(current!.latitude, current!.longitude), zoom: 16)));
-    Geolocator.getPositionStream(locationSettings: locationSettings).distinct()
-        .listen((event) async {
-      setState(() {
-        current = event;
-        initital = LatLng(event.latitude, event.longitude);
-        for(var i in marks){
+        target: LatLng(d1.get('location')['lat'], d1.get('location')['lon']), zoom: 16)));
+    setState(() { });
+  }
 
-          if(i.markerId==MarkerId('My location')){
-            marks.remove(i);
-            break;
+
+    store.collection('location').where(FieldPath.documentId,whereIn:widget.driverids ).snapshots().listen((event) {
+      event.docs.forEach((element) {
+        String time ='';
+        if(element.get('speed')!=0 &&element.get('speed')!=null&&current?.longitude!=null&&!widget.notified){
+          double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
+          time =(((distance/element.get('speed'))/60).toInt()).toString();
+          if(int.parse(time)<=5){
+            widget.change();
+            NotificationService.shownotification(title: '${element.get('name')}',body:'I\'m Less than 5 min away',payload: 'pick up  notification' );
           }
+
         }
-        marks.add(
-          Marker(
-              markerId: MarkerId('My location'),
-              icon: BitmapDescriptor.fromBytes(widget.markeruser!),
-              position: LatLng(current!.latitude, current!.longitude),
-              infoWindow: InfoWindow(
-                title: 'Your Location',
-                snippet: '20 min',
-
-              )
-
-          ),
-        );
-        control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(initital!.latitude, initital!.longitude), zoom: 16)));
       });
     });
+
   }
 }

@@ -211,7 +211,13 @@ class _driversHState extends State<driversH> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 8,),
+                                  const Divider(
+                                    height: 10,
+                                    thickness: 0.6,
+                                    indent: 0,
+                                    endIndent: 0,
+                                    color: Color(0xff4E8CDD),
+                                  ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -406,7 +412,13 @@ class _driversHState extends State<driversH> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 8,),
+                                const Divider(
+                                  height: 10,
+                                  thickness: 0.6,
+                                  indent: 0,
+                                  endIndent: 0,
+                                  color: Color(0xff4E8CDD),
+                                ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [

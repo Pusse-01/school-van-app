@@ -1,8 +1,6 @@
-<<<<<<< Updated upstream
-import 'package:flutter/material.dart';
-=======
-import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,14 +8,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background/flutter_background.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:school_van_app/screens/parents/parent_profile_main.dart';
->>>>>>> Stashed changes
 import 'package:school_van_app/screens/parents/parents_dashboard.dart';
 import 'package:school_van_app/screens/parents/parents_map.dart';
 import 'dart:ui' as ui;
 import 'package:school_van_app/screens/parents/parents_profile.dart';
 
 import '../../auth/accountselect.dart';
+import '../../services/notifications.dart';
 
 class Parent_Home extends StatefulWidget {
   const Parent_Home({Key? key}) : super(key: key);
@@ -29,26 +28,51 @@ class Parent_Home extends StatefulWidget {
 class _Parent_HomeState extends State<Parent_Home> {
   int _selected = 0;
   bool started = false;
-<<<<<<< Updated upstream
-  static const List<Widget> _widgetOptions = <Widget>[
-    Parent_Dashboard(),
-    Parents_map(),
-    Parents_profile(),
-  ];
-=======
+  String? kidid;
+  List driverids=[];
+  bool notified=false;
+
+
   Uint8List? markerIcondriver;
   Uint8List? markerIconuser;
   List childdata=[];
   List driverdata =[];
   FirebaseAuth _auth =FirebaseAuth.instance;
   FirebaseFirestore store =FirebaseFirestore.instance;
+
+
   String? selected;
 
+
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
->>>>>>> Stashed changes
   void _ontapped(int index) {
-    setState(() {
-      _selected = index;
+    index == 0
+        ? _drawerKey.currentState?.openDrawer()
+        : setState(() {
+      _selected = index - 1;
+      print(_selected);
+
+    });
+  }
+
+  void snapshotstream()async{
+    store.collection('children').where('parentid',isEqualTo: _auth.currentUser!.uid).snapshots().listen((event) {
+      event.docChanges.forEach((element) async{
+        if(element.doc.get('started')){
+          if(element.doc.get('dropped')){
+            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child safely arrived at destination',payload: 'drop notification' );
+          }else if(element.doc.get('t2remainder')){
+            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child Picked up from the school',payload: 'pick up  notification' );
+          }else if(element.doc.get('atschool')){
+            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child safely arrived at school',payload: 'drop notification' );
+          }else if(element.doc.get('picked_up')){
+            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child pick up from the house',payload: 'drop notification' );
+          }else if(element.doc.get('notifed')){
+            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'I\'m Arrivaing soon',payload: 'drop notification' );
+            print('start');
+          }
+        }
+      });
     });
   }
 
@@ -93,22 +117,31 @@ class _Parent_HomeState extends State<Parent_Home> {
     // TODO: implement initState
     super.initState();
     backgroundservice();
+    snapshotstream();
     getBytesFromAssetfordriver('assets/images/mapbus.png', 75);
     getBytesFromAssetforuser('assets/images/user_location.png', 75);
+    NotificationService.init();
 
 
   }
+  void change(){
+    notified=!notified;
+  }
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    snapshotstream();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> _widgetOptions = <Widget>[
-      Parent_Dashboard(selected: selected,),
-      Parents_map(markerdriver: markerIcondriver,markeruser: markerIconuser,),
-      ParentProfileMain(),
+     List<Widget> _widgetOptions = <Widget>[
+      Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped,),
+      Parents_map(markerdriver: markerIcondriver,markeruser: markerIconuser,driverids: driverids,notified: notified,change: change,),
+      ParentProfileMain()
     ];
     return Scaffold(
-<<<<<<< Updated upstream
       backgroundColor: Color(0xffE5E5E5),
-=======
       key: _drawerKey,
       drawer: Drawer(
           backgroundColor: Color(0xfff1f3fa),
@@ -165,6 +198,10 @@ class _Parent_HomeState extends State<Parent_Home> {
                      child:  StreamBuilder<QuerySnapshot>(stream :store.collection('children').where('parentid',isEqualTo: _auth.currentUser!.uid).snapshots(), builder: (context,snap){
                        if(snap.connectionState!=ConnectionState.waiting){
                          childdata =snap.data!.docs as List;
+                         driverids=[];
+                         childdata.forEach((element) {
+                           driverids.add(element['driverid']);
+                         });
                        }
                        return  ListView.builder(
                          itemCount: childdata.length,
@@ -177,6 +214,8 @@ class _Parent_HomeState extends State<Parent_Home> {
                                onTap: () {
                                   setState((){
                                     selected =childdata[index]['driverid'];
+                                    kidid =childdata[index].id;
+
                                   });
                                },
                                child: SizedBox(
@@ -350,8 +389,6 @@ class _Parent_HomeState extends State<Parent_Home> {
                   ))
             ],
           )),
-      backgroundColor: Colors.white,
->>>>>>> Stashed changes
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.indigo[400],
         type: BottomNavigationBarType.shifting,
@@ -359,6 +396,13 @@ class _Parent_HomeState extends State<Parent_Home> {
         currentIndex: _selected,
         onTap: _ontapped,
         items: const [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.menu_book_rounded,
+            ),
+            label: "Menu",
+            backgroundColor: Color(0xff4E8CDD),
+          ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home_outlined,

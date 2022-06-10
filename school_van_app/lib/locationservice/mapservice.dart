@@ -173,7 +173,7 @@ class _locationfindState extends State<locationfind> {
                           await store
                               .collection('location')
                               .doc(_auth.currentUser!.uid)
-                              .set({'status': true, 'corrds': {}});
+                              .set({'status': true, 'corrds': {},'speed':current!.speed,'name':_auth.currentUser!.displayName});
                         } else {
                           await FlutterBackground.disableBackgroundExecution();
                           QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
@@ -277,7 +277,8 @@ class _locationfindState extends State<locationfind> {
       });
       if (started) {
         await store.collection('location').doc(_auth.currentUser!.uid).update({
-          'corrds': {'long': event.longitude, 'lat': event.latitude}
+          'corrds': {'long': event.longitude, 'lat': event.latitude},
+          'speed':current!.speed
         });
       }
     });
