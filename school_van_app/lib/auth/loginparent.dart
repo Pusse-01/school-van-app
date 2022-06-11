@@ -66,6 +66,10 @@ class _parentloginState extends State<parentlogin> {
                       SizedBox(
                         height: 30,
                       ),
+                      Text(error,style: TextStyle(color: Colors.redAccent),),
+                      SizedBox(
+                        height: 10,
+                      ),
                       TextField(
                         controller: email,
                         decoration: InputDecoration(
@@ -150,14 +154,10 @@ class _parentloginState extends State<parentlogin> {
                                 );
                               }
                             }else{
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      authwrapper(),
-                                ),
-                                    (route) => false,
-                              );
+                             setState((){
+                               error ="Login failed";
+                               loading =false;
+                             });
                             }
                           },
                           child: Text('Log in'),
