@@ -471,80 +471,130 @@ class _driversHState extends State<driversH> {
                     ],
                   ),
                     Expanded(child: Container(
-                      child:StreamBuilder<QuerySnapshot>(stream:store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).snapshots(),builder: (context, snap) {
-                      if(snap.connectionState!=ConnectionState.waiting&&snap.data?.docs!=null) {
-                        students = snap.data!.docs;
-                      }
-                      return ListView.builder(itemCount: students.length,itemBuilder: (context,index){
-                        return Container(
-                          padding: EdgeInsets.all(8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)
-                            ),
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.person,size: 30,),
-                                    SizedBox(width: MediaQuery.of(context).size.width*0.05,),
-                                    Text(students[index].get('name'))
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.school,size: 30,),
-                                    SizedBox(width: MediaQuery.of(context).size.width*0.05,),
-                                    Text(students[index].get('school'))
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.home,size: 30,),
-                                    SizedBox(width: MediaQuery.of(context).size.width*0.05,),
-                                    Text(students[index].get('address'))
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    ElevatedButton(onPressed: ()async{
-                                      await store.collection('children').doc(students[index].id).update(
-                                         {'notifications': {
-                                              'time': DateFormat('dd-MM-yyyy hh:mm').format(DateTime.now()),
-                                              'Text':'I\'m arrving',
-                                              'name':_auth.currentUser!.displayName
-                                          }});
+                      child:FutureBuilder<DocumentSnapshot>(future:store.collection('location').doc(_auth.currentUser!.uid).get() ,builder: (context,trip){
+                        String triptype ="";
+                        if(trip.connectionState!=ConnectionState.waiting&&trip.data?.data()!=null){
+                          try{
+                            triptype=trip.data!.get("trip");
+                          }catch(e){
 
-                                    }, child:Text('Notify parent'),style: ElevatedButton.styleFrom(
-                                        primary: Colors.blue[900],
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(15))
-                                    ),),
-                                    ElevatedButton(onPressed: ()async{
-                                      if(!students[index].get('picked_up')&&runingservice){
+                          }
+                        }
+                        return StreamBuilder<QuerySnapshot>(stream:store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).snapshots(),builder: (context, snap) {
+                          if(snap.connectionState!=ConnectionState.waiting&&snap.data?.docs!=null) {
+                            students = snap.data!.docs;
+                          }
+                          if(students.length>0){
+                            return ListView.builder(itemCount: students.length,itemBuilder: (context,index){
+                              return Container(
+                                padding: EdgeInsets.all(8),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.person,size: 30,),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.05,),
+                                          Text(students[index].get('name'))
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.school,size: 30,),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.05,),
+                                          Text(students[index].get('school'))
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.home,size: 30,),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.05,),
+                                          Text(students[index].get('address'))
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ElevatedButton(onPressed: ()async{
+                                            if(triptype!="2"){
+                                              await store.collection('children').doc(students[index].id).update(
+                                                {'notifications': FieldValue.arrayUnion([{
+                                                  'time': DateFormat('hh:mm').format(DateTime.now()),
+                                                  'type':'Notified',
+                                                }]),
+                                                  'notifed':true
+                                                },
 
-                                        await store.collection('children').doc(students[index].id).update({'picked_up':true,'notifications':{'notifications': {
-                                          'time': DateFormat('dd-MM-yyyy hh:mm').format(DateTime.now()),
-                                          'Text':'Child Picked up',
-                                          'name':_auth.currentUser!.displayName
-                                        }}});
-                                      }
-                                    }, child:(students[index].get('picked_up')==true)?Text('Marked'):Text('Not Marked'),style: ElevatedButton.styleFrom(
-                                        primary:(students[index].get('picked_up')==false)? Colors.blue[900] : Colors.lightGreen[700],
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(15))
-                                    ),)
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      });
-                      }),
+                                              );
+                                            }else{
+                                              await store.collection('children').doc(students[index].id).update(
+                                                {'notifications': FieldValue.arrayUnion([{
+                                                  'time': DateFormat('hh:mm').format(DateTime.now()),
+                                                  'type':'Notified trip2',
+                                                }]),
+                                                  't2remainder':true
+                                                },
+
+                                              );
+                                            }
+
+                                          }, child:Text('Notify parent'),style: ElevatedButton.styleFrom(
+                                              primary: Colors.blue[900],
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(15))
+                                          ),),
+                                          (students[index].get('picked_up')==false)?
+                                          ElevatedButton(onPressed: ()async{
+                                            if(!students[index].get('picked_up')&&runingservice){
+
+                                              if(triptype!="2"){
+                                                await store.collection('children').doc(students[index].id).update({'picked_up':true,'notifications':{'notifications': FieldValue.arrayUnion([{
+                                                  'time': DateFormat('hh:mm').format(DateTime.now()),
+                                                  'type':'Picked up',
+                                                }])}});
+                                              }else{
+                                                await store.collection('children').doc(students[index].id).update({'picked_up':true,'notifications':{'notifications': FieldValue.arrayUnion([{
+                                                  'time': DateFormat('hh:mm').format(DateTime.now()),
+                                                  'type':'Dropped at home',
+                                                }])}});
+                                              }
+                                            }
+                                          }, child:Text('Not Marked'),style: ElevatedButton.styleFrom(
+                                              primary:(students[index].get('picked_up')==false)? Colors.blue[900] : Colors.lightGreen[700],
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(15))
+                                          ),):ElevatedButton(onPressed: ()async{
+                                            if(!students[index].get('picked_up')&&runingservice){
+                                                await store.collection('children').doc(students[index].id).update({'atschool':true,'notifications':{'notifications': FieldValue.arrayUnion([{
+                                                  'time': DateFormat('hh:mm').format(DateTime.now()),
+                                                  'type':'Dropped at school',
+                                                }])}});
+
+                                            }
+                                          }, child:Text('At school'),style: ElevatedButton.styleFrom(
+                                              primary:(students[index].get('atschool')==false)? Colors.blue[900] : Colors.lightGreen[700],
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(15))
+                                          ),)
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
+                          }else{
+                            return Center(
+                              child:Text("No Passengers",style: TextStyle(fontSize: 25,color: Colors.blue[900]),)
+                            );
+                          }
+                        });
+                      })
                     ))
                 ],
               ),

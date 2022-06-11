@@ -38,93 +38,99 @@ class _Child_InfoState extends State<Child_Info> {
                 if(snap.connectionState!=ConnectionState.waiting&&snap.data?.docs!=null) {
                   students = snap.data!.docs;
                 }
-                return ListView.builder(itemCount: students.length,itemBuilder: (context,index){
-                  return Container(
-                    padding: EdgeInsets.all(8),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.person,size: 30,),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.05,),
-                              Text(students[index].get('name'))
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.school,size: 30,),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.05,),
-                              Text(students[index].get('school'))
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.home,size: 30,),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.05,),
-                              Text(students[index].get('address'))
-                            ],
-                          ),
-                          SizedBox(height: 20,),
-                          (details==index)?Container(
-                            child:  Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                if(students.isNotEmpty){
+                  return ListView.builder(itemCount: students.length,itemBuilder: (context,index){
+                    return Container(
+                      padding: EdgeInsets.all(8),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
-                                Text('Parent Details',style: TextStyle(fontSize: 18),),
-                                SizedBox(height: 10,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                Icon(Icons.person,size: 30,),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.05,),
+                                Text(students[index].get('name'))
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.school,size: 30,),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.05,),
+                                Text(students[index].get('school'))
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.home,size: 30,),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.05,),
+                                Text(students[index].get('address'))
+                              ],
+                            ),
+                            SizedBox(height: 20,),
+                            (details==index)?Container(
+                                child:  Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CircleAvatar(
-                                      radius: MediaQuery.of(context).size.width*0.1,
-                                      backgroundImage:(parent.containsKey('pic'))?NetworkImage(parent['pic']):AssetImage('assets/images/avatar.png') as ImageProvider ,
-                                    ),
-                                    SizedBox(width: 10,),
-                                    Column(
+                                    Text('Parent Details',style: TextStyle(fontSize: 18),),
+                                    SizedBox(height: 10,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        (parent.containsKey('name'))?Text(parent['name'],style: TextStyle(fontSize: 18),):Text(''),
-                                        (parent.containsKey('Contact_No'))?Text(parent['Contact_No'],style: TextStyle(fontSize: 15),):Text('')
+                                        CircleAvatar(
+                                          radius: MediaQuery.of(context).size.width*0.1,
+                                          backgroundImage:(parent.containsKey('pic'))?NetworkImage(parent['pic']):AssetImage('assets/images/avatar.png') as ImageProvider ,
+                                        ),
+                                        SizedBox(width: 10,),
+                                        Column(
+                                          children: [
+                                            (parent.containsKey('name'))?Text(parent['name'],style: TextStyle(fontSize: 18),):Text(''),
+                                            (parent.containsKey('Contact_No'))?Text(parent['Contact_No'],style: TextStyle(fontSize: 15),):Text('')
+                                          ],
+                                        )
                                       ],
-                                    )
+                                    ),
                                   ],
-                                ),
+                                )
+                            ):Container(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(child: SizedBox()),
+                                ElevatedButton(onPressed: ()async{
+                                  if(details==null||details!=index){
+                                    details=index;
+                                    DocumentSnapshot parentdetails =await store.collection('parent').doc(students[index].get('parentid')).get();
+                                    if(parentdetails.data()!=null){
+                                      parent = parentdetails.data() as Map;
+                                    }
+                                  }else{
+                                    details=null;
+                                  }
+                                  setState(() {
+                                  });
+                                }, child:(details!=index)?Text('Details'):Text('Hide'),style: ElevatedButton.styleFrom(
+                                    primary: Colors.blue[900],
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15))
+                                ),),
                               ],
                             )
-                          ):Container(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(child: SizedBox()),
-                              ElevatedButton(onPressed: ()async{
-                                if(details==null||details!=index){
-                                  details=index;
-                                  DocumentSnapshot parentdetails =await store.collection('parent').doc(students[index].get('parentid')).get();
-                                  if(parentdetails.data()!=null){
-                                    parent = parentdetails.data() as Map;
-                                  }
-                                }else{
-                                  details=null;
-                                }
-                                setState(() {
-                                });
-                              }, child:(details!=index)?Text('Details'):Text('Hide'),style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue[900],
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15))
-                              ),),
-                            ],
-                          )
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+                    );
+                  });
+                }else{
+                  return Center(
+                      child:Text("No Passengers",style: TextStyle(fontSize: 25,color: Colors.blue[900]),)
                   );
-                });
+                }
               }),
             ))
 

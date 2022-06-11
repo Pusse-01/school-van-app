@@ -10,7 +10,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:ui' as ui;
-import 'package:school_van_app/auth/accountselect.dart';
+import 'package:intl/intl.dart';
 
 class locationfind extends StatefulWidget {
   const locationfind({Key? key}) : super(key: key);
@@ -22,6 +22,7 @@ class locationfind extends StatefulWidget {
 class _locationfindState extends State<locationfind> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore store = FirebaseFirestore.instance;
+  String trip="";
   LocationSettings locationSettings =
       LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 1);
   BitmapDescriptor? customIcon;
@@ -146,11 +147,48 @@ class _locationfindState extends State<locationfind> {
 
                 ],
               ),
+              FutureBuilder<QuerySnapshot>(future: store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get(),builder: (context,parentsid){
+                List parentids =[];
+                if(parentsid.connectionState!=ConnectionState.waiting){
+                  parentids =parentsid.data!.docs;
+                }
+                if(parentids.isNotEmpty){
+                  return FutureBuilder<QuerySnapshot>(future: store.collection('parent').where('uid',whereIn: parentids).get(),builder: (contet,data){
+                    if(data.connectionState!=ConnectionState.waiting) {
+                      data.data?.docs.forEach((element) {
+                        for (var i in marks) {
+                          if (i.markerId == MarkerId('${element.id}')) {
+                            marks.remove(i);
+                            break;
+                          }
+                        }
+                        marks.add(Marker(
+                            markerId: MarkerId('${element.id}'),
+                            icon: BitmapDescriptor.fromBytes(markerIconuser!),
+                            position: LatLng(element.get('location')['lat'],
+                                element.get('location')['lon']),
+                            infoWindow: InfoWindow(
+                              title: '${element.get('name')}',
+
+                            )
+
+                        ));
+                      });
+                    }
+                    return Container();
+
+
+
+                  });
+                }
+                return Container();
+
+              }),
               Container(
-                  child: Expanded(
+              child: Expanded(
                 child: GoogleMap(
                   initialCameraPosition:
-                      CameraPosition(target: initital!, zoom: 10),
+                  CameraPosition(target: initital!, zoom: 10),
                   onMapCreated: (GoogleMapController ctrl) {
                     control = ctrl;
                   },
@@ -158,6 +196,7 @@ class _locationfindState extends State<locationfind> {
                   polylines: Set<Polyline>.of(polylines.values),
                 ),
               )),
+
               SizedBox(
                 height: 20.0,
               ),
@@ -168,35 +207,112 @@ class _locationfindState extends State<locationfind> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     child: ElevatedButton(
                       onPressed: () async {
-                        if (!started) {
-                          backgroundservice();
-                          await store
-                              .collection('location')
-                              .doc(_auth.currentUser!.uid)
-                              .set({'status': true, 'corrds': {},'speed':current!.speed,'name':_auth.currentUser!.displayName});
-                        } else {
-                          await FlutterBackground.disableBackgroundExecution();
-                          QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
-                          List students = data.docs;
-                          students.forEach((element) async{
-                            await store.collection('children').doc(element.id).update(
-                                {
-                                  'notifications':{},
-                                  'dropped':false,
-                                  'picked_up':false,
+                        if(!started){
+                          var wait = await showDialog(context: context, builder: (BuildContext context) {
 
-                                });
-                          });
-                          await store
-                              .collection('location')
-                              .doc(_auth.currentUser!.uid)
-                              .update({
-                            'status': false,
+                            return StatefulBuilder(builder: (context,setState){
+                              return AlertDialog(
+                                title: Center(child: Text("Select Trip"),),
+                                actions: [
+                                  Container(
+                                    height: MediaQuery.of(context).size.height*0.2,
+                                    width:MediaQuery.of(context).size.width*0.7,
+                                    padding: EdgeInsets.all(10),
+                                    child:
+                                    Column(
+                                        children: [
+                                          Expanded(child: Row(
+                                            children: [
+                                              Expanded(child:  ElevatedButton(onPressed: (){
+                                                trip ="1";
+                                                Navigator.pop(context);
+                                              }, child: Text('Trip 1'),style: ElevatedButton.styleFrom(primary: Colors.blue[900]),),)
+                                            ],
+                                          ),),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child:  ElevatedButton(onPressed: (){
+                                                  trip ="2";
+                                                  Navigator.pop(context);
+                                                }, child: Text('Trip 2'),style: ElevatedButton.styleFrom(primary: Colors.blue[900]),),
+                                              )
+                                            ],
+                                          ),
+                                        ]
+                                    ),
+                                  )
+                                ],
+                              );
+                            });
                           });
                         }
-                        setState(() {
-                          started = !started;
-                        });
+                        if(trip!=""||started){
+                          if (!started) {
+                            backgroundservice();
+                            QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
+                            List students = data.docs;
+                            students.forEach((element) async{
+                              if(trip=="1"){
+                                await store
+                                    .collection('location')
+                                    .doc(_auth.currentUser!.uid)
+                                    .set({'status': true, 'corrds': {},'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"1"});
+                                await store.collection('children').doc(element.id).update(
+                                    {
+                                      'notifications':{},
+                                      'dropped':false,
+                                      'picked_up':false,
+                                      'atschool':false,
+                                      'started':true,
+                                      'notifed':false,
+                                      't2remainder':false
+
+                                    });
+                              }else{
+                                await store.collection('children').doc(element.id).update(
+                                    {
+                                      'notifications':FieldValue.arrayUnion([{
+                                        "time":DateFormat('hh:mm').format(DateTime.now()),
+                                        "type":"Trip 2 Start"
+                                      }]),
+
+                                    });
+                                await store
+                                    .collection('location')
+                                    .doc(_auth.currentUser!.uid)
+                                    .set({'status': true, 'corrds': {},'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"2"});
+
+                              }
+                            });
+
+                          } else {
+                            await FlutterBackground.disableBackgroundExecution();
+                            QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
+                            List students = data.docs;
+                            students.forEach((element) async{
+                               await store.collection('children').doc(element.id).update(
+                                   {
+                                     'dropped':false,
+                                     'picked_up':false,
+                                     'atschool':false,
+                                     'started':false,
+                                     'notifed':false,
+                                     't2remainder':false
+
+                                   });
+                            });
+                            await store
+                                .collection('location')
+                                .doc(_auth.currentUser!.uid)
+                                .update({
+                              'status': false,
+                            });
+                          }
+                          setState(() {
+                            started = !started;
+                          });
+                        }
                       },
                       child: (started) ? Text('End Trip') : Text('Start Trip'),
                       style: ElevatedButton.styleFrom(
@@ -250,9 +366,6 @@ class _locationfindState extends State<locationfind> {
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .distinct()
         .listen((event) async {
-      ///////////////////////////////////////////////////////////
-
-      ///////////////////////////////////////////////////////////
       setState(() {
         current = event;
         initital = LatLng(event.latitude, event.longitude);

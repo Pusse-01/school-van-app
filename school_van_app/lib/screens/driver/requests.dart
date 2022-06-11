@@ -76,9 +76,22 @@ class _requestsState extends State<joinrequests> {
                                   ElevatedButton.icon(onPressed: ()async{
                                     Map data =request[index];
                                     data['status']=false;
-                                    await store.collection('passengers').doc(_auth.currentUser!.uid).update({
-                                      'children':FieldValue.arrayUnion([data])
-                                    });
+                                    await store.collection('children').add(
+                                        {
+                                          'address':request[index]['address'],
+                                          'atschool':false,
+                                          'driverid':_auth.currentUser!.uid,
+                                          'drivername':_auth.currentUser!.displayName,
+                                          'dropped':false,
+                                          'name':request[index]['name'],
+                                          'notifed':false,
+                                          'parentid':request[index]['parentid'],
+                                          'picked_up':false,
+                                          'school':request[index]['school'],
+                                          'started':false,
+                                          't2remainder':false,
+                                          'notifications':{}
+                                        });
                                     request.removeAt(index);
                                     await store.collection('requests').doc(_auth.currentUser!.uid).update(
                                         {
