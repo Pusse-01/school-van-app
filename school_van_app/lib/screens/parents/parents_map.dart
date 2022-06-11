@@ -92,9 +92,9 @@ class _Parents_mapState extends State<Parents_map> {
                           }
                           String time ='-';
 
-                          if(int.parse(element.get('speed'))!=0 &&element.get('speed')!=null&&current?.longitude!=null){
+                          if(element.get('speed')!=null&&element.get('speed')!=0 &&current?.longitude!=null && element.get('corrds')['lat']!=null){
                             double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
-                            time =(((distance/int.parse(element.get('speed')))/60).toInt()).toString();
+                            time =((distance/element.get('speed').round()/60).toInt()).toString();
                             if(int.parse(time)>100){
                               time ="100+";
                             }
@@ -104,17 +104,21 @@ class _Parents_mapState extends State<Parents_map> {
                             }
 
                           }
-                          marks.add(Marker(
-                              markerId: MarkerId('${element.id}'),
-                              icon: BitmapDescriptor.fromBytes(widget.markerdriver!),
-                              position: LatLng(element.get('corrds')['lat'], element.get('corrds')['long']),
-                              infoWindow: InfoWindow(
-                                title: '${element.get('name')}',
-                                snippet: time +' min',
+                          if(element.get('corrds')['lat']!=null) {
+                            marks.add(Marker(
+                                markerId: MarkerId('${element.id}'),
+                                icon: BitmapDescriptor.fromBytes(
+                                    widget.markerdriver!),
+                                position: LatLng(element.get('corrds')['lat'],
+                                    element.get('corrds')['long']),
+                                infoWindow: InfoWindow(
+                                  title: '${element.get('name')}',
+                                  snippet: time + ' min',
 
-                              )
+                                )
 
-                          ));
+                            ));
+                          }
                         });
                       }
                       return Expanded(

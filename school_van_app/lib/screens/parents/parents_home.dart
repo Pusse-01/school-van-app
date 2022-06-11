@@ -49,7 +49,7 @@ class _Parent_HomeState extends State<Parent_Home> {
     index == 0
         ? _drawerKey.currentState?.openDrawer()
         : setState(() {
-      _selected = index - 1;
+      _selected = index;
       print(_selected);
 
     });
@@ -136,7 +136,7 @@ class _Parent_HomeState extends State<Parent_Home> {
   @override
   Widget build(BuildContext context) {
      List<Widget> _widgetOptions = <Widget>[
-
+       Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped,),
       Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped,),
       Parents_map(markerdriver: markerIcondriver,markeruser: markerIconuser,driverids: driverids,notified: notified,change: change,),
       ParentProfileMain()
