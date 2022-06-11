@@ -92,9 +92,12 @@ class _Parents_mapState extends State<Parents_map> {
                           }
                           String time ='-';
 
-                          if(element.get('speed')!=0 &&element.get('speed')!=null&&current?.longitude!=null){
+                          if(int.parse(element.get('speed'))!=0 &&element.get('speed')!=null&&current?.longitude!=null){
                             double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
-                            time =(((distance/element.get('speed'))/60).toInt()).toString();
+                            time =(((distance/int.parse(element.get('speed')))/60).toInt()).toString();
+                            if(int.parse(time)>100){
+                              time ="100+";
+                            }
                             if(int.parse(time)<=5&&!widget.notified){
                               widget.change();
                               NotificationService.shownotification(title: '${element.get('name')}',body:'I\'m Less than 5 min away',payload: 'pick up  notification' );
