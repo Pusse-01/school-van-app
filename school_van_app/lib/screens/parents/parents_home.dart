@@ -15,6 +15,7 @@ import 'package:school_van_app/screens/parents/parents_map.dart';
 import 'dart:ui' as ui;
 import 'package:school_van_app/screens/parents/parents_profile.dart';
 
+
 import '../../auth/accountselect.dart';
 import '../../services/notifications.dart';
 
@@ -62,11 +63,11 @@ class _Parent_HomeState extends State<Parent_Home> {
           if(element.doc.get('dropped')){
             NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child safely arrived at destination',payload: 'drop notification' );
           }else if(element.doc.get('t2remainder')){
-            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child Picked up from the school',payload: 'pick up  notification' );
+            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child picked up from the school',payload: 'pick up  notification' );
           }else if(element.doc.get('atschool')){
             NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child safely arrived at school',payload: 'drop notification' );
           }else if(element.doc.get('picked_up')){
-            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child pick up from the house',payload: 'drop notification' );
+            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child picked up from the house',payload: 'drop notification' );
           }else if(element.doc.get('notifed')){
             NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'I\'m Arrivaing soon',payload: 'drop notification' );
             print('start');
@@ -110,7 +111,10 @@ class _Parent_HomeState extends State<Parent_Home> {
             .buffer
             .asUint8List();
   }
-
+void changeselected(driverid,childid){
+  selected =driverid;
+  kidid =childid;
+}
 
 @override
   void initState() {
@@ -122,7 +126,6 @@ class _Parent_HomeState extends State<Parent_Home> {
     getBytesFromAssetforuser('assets/images/user_location.png', 75);
     NotificationService.init();
 
-
   }
   void change(){
     notified=!notified;
@@ -133,11 +136,13 @@ class _Parent_HomeState extends State<Parent_Home> {
     snapshotstream();
   }
 
+
   @override
   Widget build(BuildContext context) {
-     List<Widget> _widgetOptions = <Widget>[
-       Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped,),
-      Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped,),
+
+    List<Widget> _widgetOptions = <Widget>[
+      Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped),
+      Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped),
       Parents_map(markerdriver: markerIcondriver,markeruser: markerIconuser,driverids: driverids,notified: notified,change: change,),
       ParentProfileMain()
     ];
@@ -175,9 +180,6 @@ class _Parent_HomeState extends State<Parent_Home> {
                   ),
                 ),
               ),),
-              SizedBox(
-                height: 20,
-              ),
               Container(
                 // margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
                 padding: EdgeInsets.all(12.0),
@@ -202,7 +204,10 @@ class _Parent_HomeState extends State<Parent_Home> {
                          driverids=[];
                          childdata.forEach((element) {
                            driverids.add(element['driverid']);
+                           selected =element['driverid'];
+                           kidid =element.id;
                          });
+
                        }
                        return  ListView.builder(
                          itemCount: childdata.length,
@@ -270,9 +275,6 @@ class _Parent_HomeState extends State<Parent_Home> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
               Container(
                   padding: EdgeInsets.all(12.0),
 
@@ -287,7 +289,9 @@ class _Parent_HomeState extends State<Parent_Home> {
                           style: ElevatedButton.styleFrom(
                               primary: Colors.white,
                               textStyle: const TextStyle(fontSize: 16)),
-                          onPressed: () {},
+                          onPressed: () {
+                            _ontapped(3);
+                          },
                           child: Row(
                             children: [
                               Icon(
@@ -300,56 +304,6 @@ class _Parent_HomeState extends State<Parent_Home> {
                               ),
                               const Text(
                                 'My Profile',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 1,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
-                              textStyle: const TextStyle(fontSize: 16)),
-                          onPressed: () {},
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.settings,
-                                color: Colors.black,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              const Text(
-                                'Settings',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 1,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
-                              textStyle: const TextStyle(fontSize: 16)),
-                          onPressed: () {},
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.help,
-                                color: Colors.black,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              const Text(
-                                'Help',
                                 style: TextStyle(color: Colors.black),
                               ),
                             ],
@@ -390,6 +344,7 @@ class _Parent_HomeState extends State<Parent_Home> {
                   ))
             ],
           )),
+
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.indigo[400],
         type: BottomNavigationBarType.shifting,
@@ -429,7 +384,64 @@ class _Parent_HomeState extends State<Parent_Home> {
         ],
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selected),
+        child: (selected!=null||_selected==2||_selected==3)?_widgetOptions.elementAt(_selected):Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: SafeArea(child:Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height*0.5,
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.blue[900],
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(50),bottomLeft: Radius.circular(50)),
+                  image: DecorationImage(image: AssetImage('assets/images/schoolvan.png'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Select Child',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Cherry Cream Soda',
+                        color: Color.fromARGB(255, 245, 246, 247),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                )
+              ),
+              FutureBuilder<QuerySnapshot>(future:store.collection('children').where('parentid',isEqualTo: _auth.currentUser!.uid).get() ,builder: (context,data){
+                bool childhave =false;
+                if(data.connectionState!=ConnectionState.waiting){
+                  if(data.data!.docs.isNotEmpty){
+                    childhave =true;
+
+                  }
+                }
+                return Expanded(child: Center(
+                  child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: (childhave)?Text("Welcome ${_auth.currentUser!.displayName} !!! \nSelect Child from Menu to continue.....",style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Cherry Cream Soda',
+                        color: Colors.blue[900],
+                        fontWeight: FontWeight.w700,
+                      ),):Text("Welcome ${_auth.currentUser!.displayName} !!! \nAdd a child in Profile section.....",style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Cherry Cream Soda',
+                        color: Colors.blue[900],
+                        fontWeight: FontWeight.w700,
+                      ),)
+                  ),
+                ),);
+
+              })
+            ],
+          ),),
+        ),
       ),
     );
   }

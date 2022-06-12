@@ -26,12 +26,20 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
   FirebaseAuth _auth =FirebaseAuth.instance;
   Map driver={};
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+
+  }
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot>(future: store.collection('driver').doc(widget.selected).get(),builder: (context,snap){
       if(snap.connectionState!=ConnectionState.waiting &&snap.data!.data()!=null ){
         driver =snap.data!.data() as Map;
       }
-      if(widget.selected==null||snap.connectionState==ConnectionState.waiting){
+      if(snap.connectionState==ConnectionState.waiting){
+
         return loadfadingcube();
       }
       return SafeArea(
@@ -411,7 +419,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                         width: 10.0,
                                       ),
                                       AutoSizeText(
-                                        "20 Seats available",
+                                        driver['noOfSeats'],
                                         maxLines: 1,
                                         maxFontSize: 16,
                                         style: TextStyle(
@@ -508,6 +516,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                     ),
                     Container(
                       child: StreamBuilder<DocumentSnapshot>(stream:store.collection('children').doc(widget.kidid).snapshots(),builder: (context,streamdata){
+                        List times  =["        ","        ","        ","        ","        "];
                         if(streamdata.connectionState!=ConnectionState.waiting&&streamdata.data?.data()!=null){
                           isReminder1 = streamdata.data!.get('notifed');
                           isPickedup = streamdata.data!.get('picked_up');
@@ -519,6 +528,31 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                             isPickedup = true;
                             isAtSchool = true;
                           }
+                          if(isDroped){
+                            isReminder1 = true;
+                            isPickedup = true;
+                            isAtSchool = true;
+                            isReminder2=true;
+                          }
+                          List notifications =streamdata.data!.get('notifications') ;
+                          notifications.forEach((v){
+                            if(v['type']=='Notified'){
+                              times[0]=v['time'];
+                            }
+                            if(v['type']=='Picked up'){
+                              times[1]=v['time'];
+                            }
+                            if(v['type']=='Dropped at school'){
+                              times[2]=v['time'];
+                            }
+                            if(v['type']=='Notified trip2'){
+                              times[3]=v['time'];
+                            }
+                            if(v['type']=='Dropped at home'){
+                              times[4]=v['time'];
+                            }
+
+                          });
                         }
                         return Container(
                           margin: const EdgeInsets.all(8.0),
@@ -551,7 +585,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text("06:30 AM"),
+                                        Text(times[0]),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -563,7 +597,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                               style:
                                               TextStyle(fontWeight: FontWeight.bold),
                                             ),
-                                            Text("345 Dehiwala")
+                                            Text("")
                                           ],
                                         ),
                                       ],
@@ -596,7 +630,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text("06:45 AM"),
+                                        Text(times[1]),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -608,7 +642,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                               style:
                                               TextStyle(fontWeight: FontWeight.bold),
                                             ),
-                                            Text("345 Dehiwala")
+                                            Text("")
                                           ],
                                         ),
                                       ],
@@ -641,7 +675,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text("07:10 AM"),
+                                        Text(times[2]),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -653,7 +687,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                               style:
                                               TextStyle(fontWeight: FontWeight.bold),
                                             ),
-                                            Text("Royal college")
+                                            Text("")
                                           ],
                                         ),
                                       ],
@@ -686,7 +720,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text("14:20 PM"),
+                                        Text(times[3]),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -698,7 +732,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                               style:
                                               TextStyle(fontWeight: FontWeight.bold),
                                             ),
-                                            Text("Royal college")
+                                            Text("")
                                           ],
                                         ),
                                       ],
@@ -728,7 +762,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text("14:40 PM"),
+                                        Text(times[4]),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -740,7 +774,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                               style:
                                               TextStyle(fontWeight: FontWeight.bold),
                                             ),
-                                            Text("345 Dehiwala")
+                                            Text("")
                                           ],
                                         ),
                                       ],

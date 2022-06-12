@@ -548,36 +548,42 @@ class _driversHState extends State<driversH> {
                                               shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(15))
                                           ),),
+                                          (triptype=="1")?
                                           (students[index].get('picked_up')==false)?
                                           ElevatedButton(onPressed: ()async{
                                             if(!students[index].get('picked_up')&&runingservice){
-
-                                              if(triptype!="2"){
-                                                await store.collection('children').doc(students[index].id).update({'picked_up':true,'notifications':{'notifications': FieldValue.arrayUnion([{
+                                                await store.collection('children').doc(students[index].id).update({'picked_up':true,'notifications': FieldValue.arrayUnion([{
                                                   'time': DateFormat('hh:mm').format(DateTime.now()),
                                                   'type':'Picked up',
-                                                }])}});
-                                              }else{
-                                                await store.collection('children').doc(students[index].id).update({'picked_up':true,'notifications':{'notifications': FieldValue.arrayUnion([{
-                                                  'time': DateFormat('hh:mm').format(DateTime.now()),
-                                                  'type':'Dropped at home',
-                                                }])}});
-                                              }
+                                                }])});
+
                                             }
                                           }, child:Text('Not Marked'),style: ElevatedButton.styleFrom(
                                               primary:(students[index].get('picked_up')==false)? Colors.blue[900] : Colors.lightGreen[700],
                                               shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(15))
                                           ),):ElevatedButton(onPressed: ()async{
-                                            if(!students[index].get('picked_up')&&runingservice){
-                                                await store.collection('children').doc(students[index].id).update({'atschool':true,'notifications':{'notifications': FieldValue.arrayUnion([{
+                                            if(!students[index].get('atschool')&&runingservice){
+                                                await store.collection('children').doc(students[index].id).update({'atschool':true,'notifications': FieldValue.arrayUnion([{
                                                   'time': DateFormat('hh:mm').format(DateTime.now()),
                                                   'type':'Dropped at school',
-                                                }])}});
+                                                }])});
 
                                             }
                                           }, child:Text('At school'),style: ElevatedButton.styleFrom(
                                               primary:(students[index].get('atschool')==false)? Colors.blue[900] : Colors.lightGreen[700],
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(15))
+                                          ),):ElevatedButton(onPressed: ()async{
+                                            if(!students[index].get('dropped')&&runingservice){
+                                                await store.collection('children').doc(students[index].id).update({'dropped':true,'notifications': FieldValue.arrayUnion([{
+                                                  'time': DateFormat('hh:mm').format(DateTime.now()),
+                                                  'type':'Dropped at home',
+                                                }])});
+
+                                            }
+                                          }, child:(!students[index].get('dropped'))?Text('Not Marked'):Text('At Home'),style: ElevatedButton.styleFrom(
+                                              primary:(students[index].get('dropped')==false)? Colors.blue[900] : Colors.lightGreen[700],
                                               shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(15))
                                           ),)

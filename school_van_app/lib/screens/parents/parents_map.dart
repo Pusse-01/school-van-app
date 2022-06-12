@@ -81,6 +81,7 @@ class _Parents_mapState extends State<Parents_map> {
                         )),
                       ],
                     ),
+                    (widget.driverids.length!=0)?
                     StreamBuilder<QuerySnapshot>(stream:store.collection('location').where(FieldPath.documentId,whereIn:widget.driverids ).snapshots(),builder: (context,locations){
                       if(locations.connectionState!=ConnectionState.waiting){
                         locations.data!.docs.forEach((element) {
@@ -134,7 +135,19 @@ class _Parents_mapState extends State<Parents_map> {
                               polylines: Set<Polyline>.of(polylines.values),
                             ),
                           ));
-                    })
+                    }):Expanded(
+                        child: Container(
+                          child: GoogleMap(
+                            initialCameraPosition:
+                            CameraPosition(target: initital!, zoom: 16),
+                            onMapCreated: (GoogleMapController ctrl) {
+                              control = ctrl;
+
+                            },
+                            markers: marks,
+                            polylines: Set<Polyline>.of(polylines.values),
+                          ),
+                        ))
                   ],
                 ),
               ),
@@ -175,20 +188,22 @@ class _Parents_mapState extends State<Parents_map> {
   }
 
 
-    store.collection('location').where(FieldPath.documentId,whereIn:widget.driverids ).snapshots().listen((event) {
-      event.docs.forEach((element) {
-        String time ='';
-        if(element.get('speed')!=0 &&element.get('speed')!=null&&current?.longitude!=null&&!widget.notified){
-          double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
-          time =(((distance/element.get('speed'))/60).toInt()).toString();
-          if(int.parse(time)<=5){
-            widget.change();
-            NotificationService.shownotification(title: '${element.get('name')}',body:'I\'m Less than 5 min away',payload: 'pick up  notification' );
-          }
+    if(widget.driverids.length!=0){
+      store.collection('location').where(FieldPath.documentId,whereIn:widget.driverids ).snapshots().listen((event) {
+        event.docs.forEach((element) {
+          String time ='';
+          if(element.get('speed')!=0 &&element.get('speed')!=null&&current?.longitude!=null&&!widget.notified){
+            double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
+            time =(((distance/element.get('speed'))/60).toInt()).toString();
+            if(int.parse(time)<=5){
+              widget.change();
+              NotificationService.shownotification(title: '${element.get('name')}',body:'I\'m Less than 5 min away',payload: 'pick up  notification' );
+            }
 
-        }
+          }
+        });
       });
-    });
+    }
 
   }
 }

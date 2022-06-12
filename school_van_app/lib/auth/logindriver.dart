@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:school_van_app/auth/accountselect.dart';
 import 'package:school_van_app/auth/regdriver.dart';
@@ -131,14 +133,28 @@ class _logindriverState extends State<logindriver> {
                               });
                             }
                             if (result != null) {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      driverhome(),
-                                ),
-                                (route) => false,
-                              );
+                                  FirebaseFirestore store = FirebaseFirestore
+                                      .instance;
+                                  DocumentSnapshot details = await store.collection(
+                                  'driver').doc(result.uid).get();
+
+                                  if (details.data() != null) {
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            driverhome(),
+                                      ),
+                                          (route) => false,
+                                    );
+                                  }else{
+                                   setState((){
+                                     error="Login Failed";
+                                     loading=false;
+                                     FirebaseAuth _auth =FirebaseAuth.instance;
+                                     _auth.signOut();
+                                   });
+                                  }
                               setState(() {
                                 loading = false;
                               });

@@ -152,6 +152,11 @@ class _parentloginState extends State<parentlogin> {
                                   ),
                                       (route) => false,
                                 );
+                              }else{
+                                setState((){
+                                  loading=false;
+                                  error="Login failed";
+                                });
                               }
                             }else{
                              setState((){

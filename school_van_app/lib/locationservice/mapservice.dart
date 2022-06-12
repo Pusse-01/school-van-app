@@ -290,18 +290,7 @@ class _locationfindState extends State<locationfind> {
                             await FlutterBackground.disableBackgroundExecution();
                             QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
                             List students = data.docs;
-                            students.forEach((element) async{
-                               await store.collection('children').doc(element.id).update(
-                                   {
-                                     'dropped':false,
-                                     'picked_up':false,
-                                     'atschool':false,
-                                     'started':false,
-                                     'notifed':false,
-                                     't2remainder':false
 
-                                   });
-                            });
                             await store
                                 .collection('location')
                                 .doc(_auth.currentUser!.uid)
