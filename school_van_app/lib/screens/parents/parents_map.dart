@@ -192,7 +192,7 @@ class _Parents_mapState extends State<Parents_map> {
       store.collection('location').where(FieldPath.documentId,whereIn:widget.driverids ).snapshots().listen((event) {
         event.docs.forEach((element) {
           String time ='';
-          if(element.get('speed')!=0 &&element.get('speed')!=null&&current?.longitude!=null&&!widget.notified){
+          if(element.get('speed')!=0 &&element.get('speed')!=null&&current?.longitude!=null&&!widget.notified&&element.get('corrds')['lat']!=null){
             double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
             time =(((distance/element.get('speed'))/60).toInt()).toString();
             if(int.parse(time)<=5){
