@@ -93,15 +93,17 @@ class _Parents_mapState extends State<Parents_map> {
                           }
                           String time ='-';
 
-                          if(element.get('speed')!=null&&element.get('speed')!=0 &&current?.longitude!=null && element.get('corrds')['lat']!=null){
+
+                          if(element.get('speed')!=null&&element.get('speed').ceil()!=0 &&current?.longitude!=null && element.get('corrds')['lat']!=null){
                             double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
-                            time =((distance/element.get('speed').round()/60).toInt()).toString();
-                            if(int.parse(time)>100){
-                              time ="100+";
-                            }
+                            time =((distance/element.get('speed').ceil()/60).toInt()).toString();
+
                             if(int.parse(time)<=5&&!widget.notified){
                               widget.change();
                               NotificationService.shownotification(title: '${element.get('name')}',body:'I\'m Less than 5 min away',payload: 'pick up  notification' );
+                            }
+                            if(int.parse(time)>100){
+                              time ="100+";
                             }
 
                           }
@@ -120,6 +122,7 @@ class _Parents_mapState extends State<Parents_map> {
 
                             ));
                           }
+
                         });
                       }
                       return Expanded(
@@ -191,14 +194,16 @@ class _Parents_mapState extends State<Parents_map> {
     if(widget.driverids.length!=0){
       store.collection('location').where(FieldPath.documentId,whereIn:widget.driverids ).snapshots().listen((event) {
         event.docs.forEach((element) {
-          String time ='';
-          if(element.get('speed')!=0 &&element.get('speed')!=null&&current?.longitude!=null&&!widget.notified&&element.get('corrds')['lat']!=null){
+          String time ='-';
+          if(element.get('speed').ceil()!=0 &&element.get('speed')!=null&&current?.longitude!=null&&!widget.notified&&element.get('corrds')['lat']!=null){
             double distance = Geolocator.distanceBetween(element.get('corrds')['lat'], element.get('corrds')['long'], current!.latitude, current!.longitude);
-            time =(((distance/element.get('speed'))/60).toInt()).toString();
+            time =(((distance/element.get('speed')).ceil()/60).toInt()).toString();
+
             if(int.parse(time)<=5){
               widget.change();
               NotificationService.shownotification(title: '${element.get('name')}',body:'I\'m Less than 5 min away',payload: 'pick up  notification' );
             }
+
 
           }
         });
