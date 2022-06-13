@@ -41,7 +41,7 @@ class _Parent_HomeState extends State<Parent_Home> {
   FirebaseFirestore store = FirebaseFirestore.instance;
 
   String? selected;
-
+  var scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   void _ontapped(int index) {
     index == 0
