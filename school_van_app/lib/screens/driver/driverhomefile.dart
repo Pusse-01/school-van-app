@@ -893,7 +893,7 @@ class _driversHState extends State<driversH> {
                                                                 onPressed:
                                                                     () async {
                                                                   if (triptype !=
-                                                                      "2") {
+                                                                      "2"&&!(students[index].get('notifed'))) {
                                                                     await store
                                                                         .collection(
                                                                             'children')
@@ -937,12 +937,13 @@ class _driversHState extends State<driversH> {
                                                                     );
                                                                   }
                                                                 },
-                                                                child: Text(
+                                                                child: (students[index].get('notifed'))?Text(
+                                                                    'Notified'):Text(
                                                                     'Notify parent'),
                                                                 style: ElevatedButton.styleFrom(
-                                                                    primary:
+                                                                    primary:(!students[index].get('notifed'))?
                                                                         Colors.blue[
-                                                                            900],
+                                                                            900]:Colors.lightGreen,
                                                                     shape: RoundedRectangleBorder(
                                                                         borderRadius:
                                                                             BorderRadius.circular(15))),
