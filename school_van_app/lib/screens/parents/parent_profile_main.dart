@@ -438,8 +438,8 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                     } else {
                       return Center(
                           child: Text(
-                        "No Registered children",
-                        style: TextStyle(fontSize: 25, color: Colors.blue[900]),
+                        "Please add the information of your child!",
+                        style: TextStyle(fontSize: 16, color: Colors.blue[900]),
                       ));
                     }
                   }),
