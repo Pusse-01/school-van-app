@@ -969,7 +969,7 @@ class _driversHState extends State<driversH> {
                                                                             }
                                                                           },
                                                                           child:
-                                                                              Text('Not Marked'),
+                                                                          (students[index].get('picked_up') == false) ? Text('Not Arrived'):Text('Arrived'),
                                                                           style: ElevatedButton.styleFrom(
                                                                               primary: (students[index].get('picked_up') == false) ? Colors.blue[900] : Colors.lightGreen[700],
                                                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
