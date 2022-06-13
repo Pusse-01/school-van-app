@@ -41,7 +41,7 @@ class _Parent_HomeState extends State<Parent_Home> {
   FirebaseFirestore store = FirebaseFirestore.instance;
 
   String? selected;
-
+  var scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   void _ontapped(int index) {
     index == 0
@@ -205,7 +205,7 @@ class _Parent_HomeState extends State<Parent_Home> {
               Container(
                 // margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
                 padding: EdgeInsets.all(12.0),
-                // height: MediaQuery.of(context).size.height * 0.5,
+                height: MediaQuery.of(context).size.height * 0.6,
                 width: MediaQuery.of(context).size.width * 1,
                 color: Colors.white,
                 child: Column(
@@ -440,7 +440,7 @@ class _Parent_HomeState extends State<Parent_Home> {
                           child: Container(
                             padding: EdgeInsets.all(10),
                             child: Text(
-                              'Select Child',
+                              'Welcome ${_auth.currentUser!.displayName} !!! ',
                               style: TextStyle(
                                 fontSize: 25,
                                 fontFamily: 'Cherry Cream Soda',
@@ -464,12 +464,12 @@ class _Parent_HomeState extends State<Parent_Home> {
                               }
                             }
                             return Expanded(
-                              child: Center(
+                              child: Container(
                                 child: Padding(
-                                    padding: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(16),
                                     child: (childhave)
                                         ? Text(
-                                            "Welcome ${_auth.currentUser!.displayName} !!! \nSelect Child from Menu to continue.....",
+                                            "Select Child from Menu to continue.....",
                                             style: TextStyle(
                                               fontSize: 25,
                                               fontFamily: 'Cherry Cream Soda',
