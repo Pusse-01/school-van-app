@@ -90,7 +90,7 @@ class _requestsState extends State<joinrequests> {
                                           'school':request[index]['school'],
                                           'started':false,
                                           't2remainder':false,
-                                          'notifications':{}
+                                          'notifications':[]
                                         });
                                     request.removeAt(index);
                                     await store.collection('requests').doc(_auth.currentUser!.uid).update(

@@ -260,7 +260,7 @@ class _locationfindState extends State<locationfind> {
                                     .set({'status': true, 'corrds': {},'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"1"});
                                 await store.collection('children').doc(element.id).update(
                                     {
-                                      'notifications':{},
+                                      'notifications':[],
                                       'dropped':false,
                                       'picked_up':false,
                                       'atschool':false,
