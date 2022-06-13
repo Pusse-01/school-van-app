@@ -147,7 +147,7 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                                    Expanded(child: ElevatedButton(onPressed: ()async{
                                      if(email.text.trim().isNotEmpty&&name.text.trim().isNotEmpty&&school.text.trim().isNotEmpty){
                                        setState((){loading=true;});
-                                       QuerySnapshot check =await store.collection('driver').where('Email',isEqualTo: email.text.trim()).get();
+                                       QuerySnapshot check =await store.collection('driver').where('Email',isEqualTo: email.text.trim().toLowerCase()).get();
                                        if(check.docs.isEmpty){
                                          setState((){
                                            error ='Email Not Registered';
@@ -166,6 +166,10 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                                            }]
                                          },SetOptions(merge: true));
                                          setState((){loading=false;});
+                                         const message =SnackBar(
+                                           content: Text('Request Send'),
+                                         );
+                                         ScaffoldMessenger.of(context).showSnackBar(message);
                                          Navigator.pop(context);
                                        }
 

@@ -516,7 +516,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                     ),
                     Container(
                       child: StreamBuilder<DocumentSnapshot>(stream:store.collection('children').doc(widget.kidid).snapshots(),builder: (context,streamdata){
-                        List times  =["        ","        ","        ","        ","        "];
+                        List times  =["","","","",""];
                         if(streamdata.connectionState!=ConnectionState.waiting&&streamdata.data?.data()!=null){
                           isReminder1 = streamdata.data!.get('notifed');
                           isPickedup = streamdata.data!.get('picked_up');
@@ -585,7 +585,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(times[0]),
+                                        Container(width: MediaQuery.of(context).size.width*0.15,child:Text(times[0]),),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -630,7 +630,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(times[1]),
+                                        Container(width: MediaQuery.of(context).size.width*0.15,child:Text(times[1]),),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -675,7 +675,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(times[2]),
+                                        Container(width: MediaQuery.of(context).size.width*0.15,child:Text(times[2]),),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -720,7 +720,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(times[3]),
+                                        Container(width: MediaQuery.of(context).size.width*0.15,child:Text(times[3]),),
                                         const SizedBox(
                                           width: 20.0,
                                         ),
@@ -762,7 +762,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(times[4]),
+                                        Container(width: MediaQuery.of(context).size.width*0.15,child:Text(times[4]),),
                                         const SizedBox(
                                           width: 20.0,
                                         ),

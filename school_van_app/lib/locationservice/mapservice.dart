@@ -281,7 +281,7 @@ class _locationfindState extends State<locationfind> {
                                 await store
                                     .collection('location')
                                     .doc(_auth.currentUser!.uid)
-                                    .set({'status': true, 'corrds': {},'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"2"});
+                                    .set({'status': true,'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"2"});
 
                               }
                             });

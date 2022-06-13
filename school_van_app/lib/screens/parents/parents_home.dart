@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -56,25 +58,46 @@ class _Parent_HomeState extends State<Parent_Home> {
     });
   }
 
-  void snapshotstream()async{
-    store.collection('children').where('parentid',isEqualTo: _auth.currentUser!.uid).snapshots().listen((event) {
-      event.docChanges.forEach((element) async{
-        if(element.doc.get('started')){
-          if(element.doc.get('dropped')){
-            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child safely arrived at destination',payload: 'drop notification' );
-          }else if(element.doc.get('t2remainder')){
-            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child picked up from the school',payload: 'pick up  notification' );
-          }else if(element.doc.get('atschool')){
-            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child safely arrived at school',payload: 'drop notification' );
-          }else if(element.doc.get('picked_up')){
-            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'Child picked up from the house',payload: 'drop notification' );
-          }else if(element.doc.get('notifed')){
-            NotificationService.shownotification(title: '${element.doc.get('drivername')}',body:'I\'m Arrivaing soon',payload: 'drop notification' );
-            print('start');
+  void snapshotstream()async {
+    Stream details = store.collection('children').where('parentid', isEqualTo: _auth.currentUser!.uid).snapshots();
+    StreamSubscription sub =details.distinct().listen((event) {
+      event.docChanges.forEach((element) async {
+        if (element.doc.get('started')) {
+          if (element.doc.get('dropped')) {
+            NotificationService.shownotification(
+                title: '${element.doc.get('drivername')}',
+                body: 'Child safely arrived at destination',
+                payload: 'drop notification');
+          } else if (element.doc.get('t2remainder')) {
+            NotificationService.shownotification(
+                title: '${element.doc.get('drivername')}',
+                body: 'Child picked up from the school',
+                payload: 'pick up  notification');
+          } else if (element.doc.get('atschool')) {
+            NotificationService.shownotification(
+                title: '${element.doc.get('drivername')}',
+                body: 'Child safely arrived at school',
+                payload: 'drop notification');
+          } else if (element.doc.get('picked_up')) {
+            NotificationService.shownotification(
+                title: '${element.doc.get('drivername')}',
+                body: 'Child picked up from the house',
+                payload: 'drop notification');
+          } else if (element.doc.get('notifed')) {
+            NotificationService.shownotification(
+                title: '${element.doc.get('drivername')}',
+                body: 'I\'m Arrivaing soon',
+                payload: 'drop notification');
           }
         }
       });
     });
+    _auth.authStateChanges().listen((user){
+        if(user==null){
+          sub.cancel();
+        }
+    });
+
   }
 
   void backgroundservice()async{
@@ -130,11 +153,7 @@ void changeselected(driverid,childid){
   void change(){
     notified=!notified;
   }
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    snapshotstream();
-  }
+
 
 
   @override

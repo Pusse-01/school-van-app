@@ -3,6 +3,8 @@ import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/locationservice/mapservice.dart';
 import 'package:school_van_app/services/authentication.dart';
 
+import '../screens/driver/driverhome.dart';
+
 
 class regdriver extends StatefulWidget {
   const regdriver({Key? key}) : super(key: key);
@@ -237,7 +239,7 @@ class _regdriverState extends State<regdriver> {
                               authService auth = authService();
                               dynamic result =
                                   await auth.registerwithEmaildriver(
-                                      email.text.trim(),
+                                      email.text.trim().toLowerCase(),
                                       password.text.trim(),
                                       name.text.trim(),
                                       driving.text.trim(),
@@ -249,9 +251,9 @@ class _regdriverState extends State<regdriver> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        locationfind(),
+                                        driverhome(),
                                   ),
-                                  (route) => false,
+                                      (route) => false,
                                 );
                               }
                             }
