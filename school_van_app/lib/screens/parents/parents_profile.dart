@@ -7,7 +7,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:school_van_app/auth/logindriver.dart';
+import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/screens/driver/driverhome.dart';
+import 'package:school_van_app/screens/parents/parents_dashboard.dart';
 
 class Parents_profile extends StatefulWidget {
   const Parents_profile({Key? key}) : super(key: key);
@@ -26,8 +28,6 @@ class _Parents_profileState extends State<Parents_profile> {
   TextEditingController contact = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirm = TextEditingController();
-  TextEditingController driving = TextEditingController();
-  TextEditingController NIC = TextEditingController();
   TextEditingController address = TextEditingController();
   int index = 1;
   File? name;
@@ -108,7 +108,7 @@ class _Parents_profileState extends State<Parents_profile> {
                                 await upload.ref.getDownloadURL();
                                 await _auth.currentUser!.updatePhotoURL(completed);
                                 await store
-                                    .collection('driver')
+                                    .collection('parent')
                                     .doc(_auth.currentUser!.uid)
                                     .update({'pic': completed});
 
@@ -156,15 +156,7 @@ class _Parents_profileState extends State<Parents_profile> {
                                     height: 10,
                                   ),
                                   TextField(
-                                    controller: email,
-                                    decoration:
-                                    InputDecoration(hintText: "Childs' name"),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextField(
-                                    controller: contact,
+                                    controller: fullName,
                                     decoration:
                                     InputDecoration(hintText: "Parents' name"),
                                   ),
@@ -180,14 +172,7 @@ class _Parents_profileState extends State<Parents_profile> {
                                     height: 10,
                                   ),
                                   TextField(
-                                    controller: NIC,
-                                    decoration: InputDecoration(hintText: "School"),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextField(
-                                    controller: NIC,
+                                    controller: contact,
                                     decoration:
                                     InputDecoration(hintText: "Contact no:"),
                                   ),
@@ -360,20 +345,17 @@ class _Parents_profileState extends State<Parents_profile> {
                                         newdata['Contact_No'] =
                                             contact.text.trim();
                                       }
-                                      if (driving.text.trim().isNotEmpty) {
-                                        newdata['license'] =
-                                            driving.text.trim();
+                                      if (fullName.text.trim().isNotEmpty) {
+                                        newdata['name'] =
+                                            fullName.text.trim();
                                       }
                                       if (address.text.trim().isNotEmpty) {
                                         newdata['address'] =
                                             address.text.trim();
                                       }
-                                      if (NIC.text.trim().isNotEmpty) {
-                                        newdata['NIC'] = NIC.text.trim();
-                                      }
                                       try {
                                         await store
-                                            .collection('driver')
+                                            .collection('parent')
                                             .doc(_auth.currentUser!.uid)
                                             .update(newdata);
                                         if (email.text.trim().isNotEmpty) {
@@ -417,15 +399,13 @@ class _Parents_profileState extends State<Parents_profile> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      logindriver()),
+                                                      parentlogin()),
                                                   (route) => false);
                                         } else {
-                                          Navigator.pushAndRemoveUntil(
+                                          Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      driverhome()),
-                                                  (route) => false);
+                                                  builder: (context) => Parent_Dashboard()));
                                         }
                                       } catch (e) {
                                         setState(() {
