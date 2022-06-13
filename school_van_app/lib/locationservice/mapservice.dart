@@ -384,7 +384,7 @@ class _locationfindState extends State<locationfind> {
              target: LatLng(event.latitude, event.longitude), zoom: 16)));
        }
       });
-      if (started) {
+      if (started&&_auth.currentUser!=null) {
         await store.collection('location').doc(_auth.currentUser!.uid).update({
           'corrds': {'long': event.longitude, 'lat': event.latitude},
           'speed':current!.speed
