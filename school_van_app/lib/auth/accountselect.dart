@@ -93,7 +93,6 @@ class accountselect extends StatelessWidget {
                                 builder: (context) => logindriver()));
                       },
                       child: Container(
-                        height: MediaQuery.of(context).size.height * 0.2,
                         width: MediaQuery.of(context).size.width * 0.4,
                         color: Colors.redAccent[300],
                         padding: EdgeInsets.all(16),
@@ -144,7 +143,6 @@ class accountselect extends StatelessWidget {
 
                       },
                       child: Container(
-                        height: MediaQuery.of(context).size.height * 0.2,
                         width: MediaQuery.of(context).size.width * 0.4,
                         color: Colors.blueAccent[300],
                         padding: EdgeInsets.all(16),
