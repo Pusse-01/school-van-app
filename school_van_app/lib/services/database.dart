@@ -19,6 +19,8 @@ class databaseService{
           "address":address,
           'NIC':NIC,
           'license':license,
+          'trip1':{'start':'-','end':'-'},
+          'trip2':{'start':'-','end':'-'}
 
         }
     );
