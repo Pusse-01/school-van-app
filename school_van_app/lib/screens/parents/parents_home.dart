@@ -225,232 +225,281 @@ class _Parent_HomeState extends State<Parent_Home> {
                         padding: const EdgeInsets.all(12.0),
                         child: Center(
                             child: Row(
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  size: 15,
-                                  color: Colors.grey,
-                                ),
-                                TextButton(
-                                    onPressed: () async{
-                                      var wait = await showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            TextEditingController name =
+                          children: [
+                            Icon(
+                              Icons.add,
+                              size: 15,
+                              color: Colors.grey,
+                            ),
+                            TextButton(
+                                onPressed: () async {
+                                  var wait = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        TextEditingController name =
                                             TextEditingController();
-                                            TextEditingController school =
+                                        TextEditingController school =
                                             TextEditingController();
-                                            TextEditingController email =
+                                        TextEditingController email =
                                             TextEditingController();
-                                            String error = "";
-                                            bool loading = false;
-                                            return StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return AlertDialog(
-                                                    title: Text("Add Child"),
-                                                    content: Container(
-                                                        height:
-                                                        MediaQuery.of(context).size.height *
-                                                            0.3,
-                                                        width: MediaQuery.of(context).size.width *
-                                                            0.9,
-                                                        child: (!loading)
-                                                            ? ListView(
-                                                          children: [
-                                                            Text(
-                                                              error,
-                                                              style: TextStyle(
-                                                                  color: Colors.redAccent),
+                                        String error = "";
+                                        bool loading = false;
+                                        return StatefulBuilder(
+                                            builder: (context, setState) {
+                                          return AlertDialog(
+                                            title: Text("Add Child"),
+                                            content: Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.3,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.9,
+                                                child: (!loading)
+                                                    ? ListView(
+                                                        children: [
+                                                          Text(
+                                                            error,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .redAccent),
+                                                          ),
+                                                          Container(
+                                                            child: TextField(
+                                                              controller: name,
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                      border:
+                                                                          OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(15.0),
+                                                                      ),
+                                                                      contentPadding:
+                                                                          EdgeInsets.all(
+                                                                              15),
+                                                                      filled:
+                                                                          true,
+                                                                      fillColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      hintText:
+                                                                          "Child name",
+                                                                      hintStyle: TextStyle(
+                                                                          color: Colors
+                                                                              .grey,
+                                                                          fontSize:
+                                                                              15.0)),
                                                             ),
-                                                            Container(
-                                                              child: TextField(
-                                                                controller: name,
-                                                                decoration: InputDecoration(
-                                                                    border:
-                                                                    OutlineInputBorder(
-                                                                      borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                          15.0),
-                                                                    ),
-                                                                    contentPadding:
-                                                                    EdgeInsets.all(15),
-                                                                    filled: true,
-                                                                    fillColor: Colors.white,
-                                                                    hintText: "Child name",
-                                                                    hintStyle: TextStyle(
-                                                                        color: Colors.grey,
-                                                                        fontSize: 15.0)),
-                                                              ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Container(
+                                                            child: TextField(
+                                                              controller:
+                                                                  school,
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                      border:
+                                                                          OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(15.0),
+                                                                      ),
+                                                                      contentPadding:
+                                                                          EdgeInsets.all(
+                                                                              15),
+                                                                      filled:
+                                                                          true,
+                                                                      fillColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      hintText:
+                                                                          "School",
+                                                                      hintStyle: TextStyle(
+                                                                          color: Colors
+                                                                              .grey,
+                                                                          fontSize:
+                                                                              15.0)),
                                                             ),
-                                                            SizedBox(
-                                                              height: 10,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Container(
+                                                            child: TextField(
+                                                              controller: email,
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                      border:
+                                                                          OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(15.0),
+                                                                      ),
+                                                                      contentPadding:
+                                                                          EdgeInsets.all(
+                                                                              15),
+                                                                      filled:
+                                                                          true,
+                                                                      fillColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      hintText:
+                                                                          "Driver email",
+                                                                      hintStyle: TextStyle(
+                                                                          color: Colors
+                                                                              .grey,
+                                                                          fontSize:
+                                                                              15.0)),
                                                             ),
-                                                            Container(
-                                                              child: TextField(
-                                                                controller: school,
-                                                                decoration: InputDecoration(
-                                                                    border:
-                                                                    OutlineInputBorder(
-                                                                      borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                          15.0),
-                                                                    ),
-                                                                    contentPadding:
-                                                                    EdgeInsets.all(15),
-                                                                    filled: true,
-                                                                    fillColor: Colors.white,
-                                                                    hintText: "School",
-                                                                    hintStyle: TextStyle(
-                                                                        color: Colors.grey,
-                                                                        fontSize: 15.0)),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Container(
-                                                              child: TextField(
-                                                                controller: email,
-                                                                decoration: InputDecoration(
-                                                                    border:
-                                                                    OutlineInputBorder(
-                                                                      borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                          15.0),
-                                                                    ),
-                                                                    contentPadding:
-                                                                    EdgeInsets.all(15),
-                                                                    filled: true,
-                                                                    fillColor: Colors.white,
-                                                                    hintText:
-                                                                    "Driver email",
-                                                                    hintStyle: TextStyle(
-                                                                        color: Colors.grey,
-                                                                        fontSize: 15.0)),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                          ],
-                                                        )
-                                                            : Container(
-                                                          height: MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                              0.4,
-                                                          width: MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                              0.4,
-                                                          child: loadfadingcube(),
-                                                        )),
-                                                    actions: [
-                                                      Container(
-                                                        padding: EdgeInsets.all(10),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                                child: ElevatedButton(
-                                                                  onPressed: () async {
-                                                                    if (email.text
-                                                                        .trim()
-                                                                        .isNotEmpty &&
-                                                                        name.text.trim().isNotEmpty &&
-                                                                        school.text
-                                                                            .trim()
-                                                                            .isNotEmpty) {
-                                                                      setState(() {
-                                                                        loading = true;
-                                                                      });
-                                                                      QuerySnapshot check =
-                                                                      await store
-                                                                          .collection('driver')
-                                                                          .where('Email',
-                                                                          isEqualTo: email
-                                                                              .text
-                                                                              .trim()
-                                                                              .toLowerCase())
-                                                                          .get();
-                                                                      if (check.docs.isEmpty) {
-                                                                        setState(() {
-                                                                          error =
-                                                                          'Email Not Registered';
-                                                                          setState(() {
-                                                                            loading = false;
-                                                                          });
-                                                                        });
-                                                                      } else {
-                                                                        DocumentSnapshot data =
-                                                                        await store
-                                                                            .collection('parent')
-                                                                            .doc(_auth
-                                                                            .currentUser!.uid)
-                                                                            .get();
-                                                                        await store
-                                                                            .collection('requests')
-                                                                            .doc(check.docs[0].id)
-                                                                            .set({
-                                                                          'requests': [
-                                                                            {
-                                                                              'name':
-                                                                              name.text.trim(),
-                                                                              'school':
-                                                                              school.text.trim(),
-                                                                              'parentid': _auth
-                                                                                  .currentUser!.uid,
-                                                                              'address':
-                                                                              data.get('address')
-                                                                            }
-                                                                          ]
-                                                                        }, SetOptions(merge: true));
-                                                                        setState(() {
-                                                                          loading = false;
-                                                                        });
-                                                                        const message = SnackBar(
-                                                                          content:
-                                                                          Text('Request Send'),
-                                                                        );
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(message);
-                                                                        Navigator.pop(context);
-                                                                      }
-                                                                    } else {
-                                                                      setState(() {
-                                                                        error = 'Fill all Fields';
-                                                                        setState(() {
-                                                                          loading = false;
-                                                                        });
-                                                                      });
-                                                                    }
-                                                                  },
-                                                                  child: Container(
-                                                                    padding: EdgeInsets.all(20),
-                                                                    child: Text("Submit"),
-                                                                  ),
-                                                                  style: ElevatedButton.styleFrom(
-                                                                      primary: Colors.blue[900]),
-                                                                ))
-                                                          ],
-                                                        ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                        ],
                                                       )
-                                                    ],
-                                                  );
-                                                });
-                                          });
-                                    },
-                                    child: AutoSizeText(
-                                      "Add Child",
-                                      maxLines: 1,
-                                      maxFontSize: 12,
-                                      style:
-                                      TextStyle(color: Colors.grey),
-                                    ))
-                              ],
-                            )),
+                                                    : Container(
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.4,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.4,
+                                                        child: loadfadingcube(),
+                                                      )),
+                                            actions: [
+                                              Container(
+                                                padding: EdgeInsets.all(10),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                        child: ElevatedButton(
+                                                      onPressed: () async {
+                                                        if (email.text
+                                                                .trim()
+                                                                .isNotEmpty &&
+                                                            name.text
+                                                                .trim()
+                                                                .isNotEmpty &&
+                                                            school.text
+                                                                .trim()
+                                                                .isNotEmpty) {
+                                                          setState(() {
+                                                            loading = true;
+                                                          });
+                                                          QuerySnapshot check =
+                                                              await store
+                                                                  .collection(
+                                                                      'driver')
+                                                                  .where(
+                                                                      'Email',
+                                                                      isEqualTo: email
+                                                                          .text
+                                                                          .trim()
+                                                                          .toLowerCase())
+                                                                  .get();
+                                                          if (check
+                                                              .docs.isEmpty) {
+                                                            setState(() {
+                                                              error =
+                                                                  'Email Not Registered';
+                                                              setState(() {
+                                                                loading = false;
+                                                              });
+                                                            });
+                                                          } else {
+                                                            DocumentSnapshot
+                                                                data =
+                                                                await store
+                                                                    .collection(
+                                                                        'parent')
+                                                                    .doc(_auth
+                                                                        .currentUser!
+                                                                        .uid)
+                                                                    .get();
+                                                            await store
+                                                                .collection(
+                                                                    'requests')
+                                                                .doc(check
+                                                                    .docs[0].id)
+                                                                .set(
+                                                                    {
+                                                                  'requests': [
+                                                                    {
+                                                                      'name': name
+                                                                          .text
+                                                                          .trim(),
+                                                                      'school': school
+                                                                          .text
+                                                                          .trim(),
+                                                                      'parentid': _auth
+                                                                          .currentUser!
+                                                                          .uid,
+                                                                      'address':
+                                                                          data.get(
+                                                                              'address')
+                                                                    }
+                                                                  ]
+                                                                },
+                                                                    SetOptions(
+                                                                        merge:
+                                                                            true));
+                                                            setState(() {
+                                                              loading = false;
+                                                            });
+                                                            const message =
+                                                                SnackBar(
+                                                              content: Text(
+                                                                  'Request Send'),
+                                                            );
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                                    message);
+                                                            Navigator.pop(
+                                                                context);
+                                                          }
+                                                        } else {
+                                                          setState(() {
+                                                            error =
+                                                                'Fill all Fields';
+                                                            setState(() {
+                                                              loading = false;
+                                                            });
+                                                          });
+                                                        }
+                                                      },
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.all(20),
+                                                        child: Text("Submit"),
+                                                      ),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              primary: Colors
+                                                                  .blue[900]),
+                                                    ))
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        });
+                                      });
+                                },
+                                child: AutoSizeText(
+                                  "Add Child",
+                                  maxLines: 1,
+                                  maxFontSize: 12,
+                                  style: TextStyle(color: Colors.grey),
+                                ))
+                          ],
+                        )),
                       ),
                     ),
                     Container(
@@ -713,7 +762,7 @@ class _Parent_HomeState extends State<Parent_Home> {
                                             ),
                                           )
                                         : Text(
-                                            "Welcome ${_auth.currentUser!.displayName} !!! \nAdd a child in Profile section.....",
+                                            "Add the information of your child in Profile section..!",
                                             style: TextStyle(
                                               fontSize: 25,
                                               fontFamily: 'Cherry Cream Soda',
