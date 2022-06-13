@@ -410,39 +410,7 @@ class _Parent_DashboardState extends State<Parent_Dashboard> {
                                     )
                                   ],
                                 ),
-                                (driver['noOfSeats'] != '')
-                                    ? Container(
-                                        child: Column(
-                                          children: [
-                                            const Divider(
-                                              height: 20,
-                                              thickness: 0.6,
-                                              indent: 0,
-                                              endIndent: 0,
-                                              color: Colors.grey,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Icon(Icons.bus_alert),
-                                                SizedBox(
-                                                  width: 10.0,
-                                                ),
-                                                AutoSizeText(
-                                                  driver['noOfSeats'],
-                                                  maxLines: 1,
-                                                  maxFontSize: 16,
-                                                  style: TextStyle(
-                                                    // fontSize: 16.0,
-                                                    // fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    : Container(),
+
                                 const Divider(
                                   height: 20,
                                   thickness: 0.6,

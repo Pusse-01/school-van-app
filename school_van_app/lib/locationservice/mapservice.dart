@@ -283,7 +283,11 @@ class _locationfindState extends State<locationfind> {
                                     .doc(_auth.currentUser!.uid)
                                     .set({'status': true,'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"2"});
 
+
                               }
+                            });
+                            setState(() {
+                              started = !started;
                             });
 
                           } else if(started){
@@ -299,10 +303,11 @@ class _locationfindState extends State<locationfind> {
                                 .update({
                               'status': false,
                             });
+                            setState(() {
+                              started = !started;
+                            });
                           }
-                          setState(() {
-                            started = !started;
-                          });
+
 
                       },
                       child: (started) ? Text('End Trip') : Text('Start Trip'),

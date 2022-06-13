@@ -246,7 +246,7 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                                                         'name':
                                                             name.text.trim(),
                                                         'school':
-                                                            name.text.trim(),
+                                                            school.text.trim(),
                                                         'parentid': _auth
                                                             .currentUser!.uid,
                                                         'address':
