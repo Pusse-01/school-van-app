@@ -57,7 +57,8 @@ class _Driver_profileState extends State<Driver_profile> {
       return FutureBuilder<DocumentSnapshot>(
           future: store.collection("driver").doc(_auth.currentUser!.uid).get(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting|| snapshot.data!.data()==null) {
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.data!.data() == null) {
               return Scaffold(
                   body: SafeArea(
                 child: Center(
@@ -76,35 +77,49 @@ class _Driver_profileState extends State<Driver_profile> {
                   child: SingleChildScrollView(
                     child: Container(
                       child: Column(
-
-
                         children: [
-                         Row(
-                           mainAxisAlignment: MainAxisAlignment.start,
-                           children: [
-                            Container(
-                              padding: EdgeInsets.all(16),
-                              child:  Text(
-                                "Profile",
-                                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,color: Colors.blue[900]),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(16),
+                                child: Text(
+                                  "Profile",
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue[900]),
+                                ),
                               ),
-                            ),
-                             Expanded(child: SizedBox()),
-                             ElevatedButton(
-                                 onPressed: () async {
-                                   FirebaseAuth _auth = FirebaseAuth.instance;
-                                   if(FlutterBackground.isBackgroundExecutionEnabled){
-                                     await FlutterBackground.disableBackgroundExecution();
-                                   }
-                                   await _auth.signOut();
+                              Expanded(child: SizedBox()),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  FirebaseAuth _auth = FirebaseAuth.instance;
+                                  if (FlutterBackground
+                                      .isBackgroundExecutionEnabled) {
+                                    await FlutterBackground
+                                        .disableBackgroundExecution();
+                                  }
+                                  await _auth.signOut();
 
-                                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>accountselect()), (route) => false);
-                                   setState(() {});
-                                 },
-                                 child: Text('Sign Out'),style: ElevatedButton.styleFrom(primary: Colors.red),),
-                             SizedBox(width: 10,),
-                           ],
-                         ),
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              accountselect()),
+                                      (route) => false);
+                                  setState(() {});
+                                },
+                                child: Text('Sign Out'),
+                                style: ElevatedButton.styleFrom(
+                                    primary:
+                                        Color.fromARGB(255, 166, 167, 168)),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
                           SizedBox(
                             height: 20,
                           ),
@@ -155,7 +170,14 @@ class _Driver_profileState extends State<Driver_profile> {
                           SizedBox(
                             height: 10,
                           ),
-
+                          Text(
+                            "Edit Profile",
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Container(
                             padding: EdgeInsets.all(16),
                             child: Container(
@@ -237,7 +259,10 @@ class _Driver_profileState extends State<Driver_profile> {
                                           },
                                           child: Text(
                                             'Next',
-                                            style: TextStyle(fontSize: 18),
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: Color.fromARGB(
+                                                    255, 166, 167, 168)),
                                           ))
                                     ],
                                   ),
@@ -358,7 +383,10 @@ class _Driver_profileState extends State<Driver_profile> {
                                     },
                                     child: Text(
                                       'Back',
-                                      style: TextStyle(fontSize: 18),
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color.fromARGB(
+                                              255, 166, 167, 168)),
                                     )),
                                 TextButton(
                                     onPressed: () async {
@@ -445,7 +473,10 @@ class _Driver_profileState extends State<Driver_profile> {
                                     },
                                     child: Text(
                                       'Save',
-                                      style: TextStyle(fontSize: 18),
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color.fromARGB(
+                                              255, 166, 167, 168)),
                                     ))
                               ],
                             ),

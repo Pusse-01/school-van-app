@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -17,7 +16,6 @@ import 'package:school_van_app/screens/parents/parents_map.dart';
 import 'dart:ui' as ui;
 import 'package:school_van_app/screens/parents/parents_profile.dart';
 
-
 import '../../auth/accountselect.dart';
 import '../../services/notifications.dart';
 
@@ -32,35 +30,34 @@ class _Parent_HomeState extends State<Parent_Home> {
   int _selected = 0;
   bool started = false;
   String? kidid;
-  List driverids=[];
-  bool notified=false;
-
+  List driverids = [];
+  bool notified = false;
 
   Uint8List? markerIcondriver;
   Uint8List? markerIconuser;
-  List childdata=[];
-  List driverdata =[];
-  FirebaseAuth _auth =FirebaseAuth.instance;
-  FirebaseFirestore store =FirebaseFirestore.instance;
-
+  List childdata = [];
+  List driverdata = [];
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore store = FirebaseFirestore.instance;
 
   String? selected;
-
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   void _ontapped(int index) {
     index == 0
         ? _drawerKey.currentState?.openDrawer()
         : setState(() {
-      _selected = index;
-      print(_selected);
-
-    });
+            _selected = index;
+            print(_selected);
+          });
   }
 
-  void snapshotstream()async {
-    Stream details = store.collection('children').where('parentid', isEqualTo: _auth.currentUser!.uid).snapshots();
-    StreamSubscription sub =details.distinct().listen((event) {
+  void snapshotstream() async {
+    Stream details = store
+        .collection('children')
+        .where('parentid', isEqualTo: _auth.currentUser!.uid)
+        .snapshots();
+    StreamSubscription sub = details.distinct().listen((event) {
       event.docChanges.forEach((element) async {
         if (element.doc.get('started')) {
           if (element.doc.get('dropped')) {
@@ -92,15 +89,14 @@ class _Parent_HomeState extends State<Parent_Home> {
         }
       });
     });
-    _auth.authStateChanges().listen((user){
-        if(user==null){
-          sub.cancel();
-        }
+    _auth.authStateChanges().listen((user) {
+      if (user == null) {
+        sub.cancel();
+      }
     });
-
   }
 
-  void backgroundservice()async{
+  void backgroundservice() async {
     final androidConfig = FlutterBackgroundAndroidConfig(
         notificationTitle: "School Van App",
         notificationText: "App is Running",
@@ -110,9 +106,8 @@ class _Parent_HomeState extends State<Parent_Home> {
             defType: 'drawable'), // Default is ic_launcher from folder mipmap
         enableWifiLock: false);
     bool success =
-    await FlutterBackground.initialize(androidConfig: androidConfig);
+        await FlutterBackground.initialize(androidConfig: androidConfig);
     await FlutterBackground.enableBackgroundExecution();
-
   }
 
   getBytesFromAssetfordriver(String path, int width) async {
@@ -120,10 +115,12 @@ class _Parent_HomeState extends State<Parent_Home> {
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
         targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    markerIcondriver = (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
-        .buffer
-        .asUint8List();
+    markerIcondriver =
+        (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+            .buffer
+            .asUint8List();
   }
+
   getBytesFromAssetforuser(String path, int width) async {
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
@@ -134,12 +131,13 @@ class _Parent_HomeState extends State<Parent_Home> {
             .buffer
             .asUint8List();
   }
-void changeselected(driverid,childid){
-  selected =driverid;
-  kidid =childid;
-}
 
-@override
+  void changeselected(driverid, childid) {
+    selected = driverid;
+    kidid = childid;
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -148,21 +146,24 @@ void changeselected(driverid,childid){
     getBytesFromAssetfordriver('assets/images/mapbus.png', 75);
     getBytesFromAssetforuser('assets/images/user_location.png', 75);
     NotificationService.init();
-
-  }
-  void change(){
-    notified=!notified;
   }
 
-
+  void change() {
+    notified = !notified;
+  }
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> _widgetOptions = <Widget>[
-      Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped),
-      Parent_Dashboard(selected: selected,kidid: kidid,ontapped: _ontapped),
-      Parents_map(markerdriver: markerIcondriver,markeruser: markerIconuser,driverids: driverids,notified: notified,change: change,),
+      Parent_Dashboard(selected: selected, kidid: kidid, ontapped: _ontapped),
+      Parent_Dashboard(selected: selected, kidid: kidid, ontapped: _ontapped),
+      Parents_map(
+        markerdriver: markerIcondriver,
+        markeruser: markerIconuser,
+        driverids: driverids,
+        notified: notified,
+        change: change,
+      ),
       ParentProfileMain()
     ];
     return Scaffold(
@@ -173,32 +174,34 @@ void changeselected(driverid,childid){
           child: Column(
             // padding: EdgeInsets.zero,
             children: [
-              Expanded(child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 250, 250, 251),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                          radius: MediaQuery.of(context).size.height * 0.06,
-                          backgroundColor: Colors.amber,
-                          foregroundImage:
-                          AssetImage('assets/images/avatar.png')),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      AutoSizeText(
-                        '  ${_auth.currentUser!.displayName}',
-                        maxFontSize: 16,
-                        maxLines: 1,
-                      ),
-                    ],
+              Expanded(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 250, 250, 251),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                            radius: MediaQuery.of(context).size.height * 0.06,
+                            backgroundColor: Colors.amber,
+                            foregroundImage:
+                                AssetImage('assets/images/avatar.png')),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        AutoSizeText(
+                          '  ${_auth.currentUser!.displayName}',
+                          maxFontSize: 20,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),),
+              ),
               Container(
                 // margin: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
                 padding: EdgeInsets.all(12.0),
@@ -215,82 +218,87 @@ void changeselected(driverid,childid){
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                   Container(
-                     height: MediaQuery.of(context).size.height*0.3,
-                     child:  StreamBuilder<QuerySnapshot>(stream :store.collection('children').where('parentid',isEqualTo: _auth.currentUser!.uid).snapshots(), builder: (context,snap){
-                       if(snap.connectionState!=ConnectionState.waiting){
-                         childdata =snap.data!.docs as List;
-                         driverids=[];
-                         childdata.forEach((element) {
-                           driverids.add(element['driverid']);
-                           selected =element['driverid'];
-                           kidid =element.id;
-                         });
-
-                       }
-                       return  ListView.builder(
-                         itemCount: childdata.length,
-                         itemBuilder: (BuildContext context, int index) {
-
-                           return Card(
-                             color: Color(0xff4E8CDD),
-                             child: InkWell(
-                               splashColor: Colors.blue.withAlpha(30),
-                               onTap: () {
-                                  setState((){
-                                    selected =childdata[index]['driverid'];
-                                    kidid =childdata[index].id;
-
-                                  });
-                               },
-                               child: SizedBox(
-                                 width: 300,
-                                 // height: 60,
-                                 child: Padding(
-                                   padding: EdgeInsets.all(12.0),
-                                   child: Row(
-                                     children: [
-                                       CircleAvatar(
-                                           radius: 20,
-                                           backgroundColor: Colors.amber,
-                                           foregroundImage:
-                                           AssetImage('assets/images/avatar.png')),
-                                       SizedBox(
-                                         width: 20,
-                                       ),
-                                       Column(
-                                         mainAxisAlignment: MainAxisAlignment.center,
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           Text(
-                                             '${childdata[index]['name']}',
-                                             style: TextStyle(
-                                                 color: Colors.white,
-                                                 fontWeight: FontWeight.bold),
-                                           ),
-                                           SizedBox(
-                                             height: 5,
-                                           ),
-                                           Text(
-                                             '${childdata[index]['school']}',
-                                             style: TextStyle(
-                                               color: Colors.white,
-                                             ),
-                                           ),
-                                         ],
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                               ),
-                             ),
-                           ) ;
-                         },
-                       );
-
-                     })
-                   ),
-
+                    Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: store
+                                .collection('children')
+                                .where('parentid',
+                                    isEqualTo: _auth.currentUser!.uid)
+                                .snapshots(),
+                            builder: (context, snap) {
+                              if (snap.connectionState !=
+                                  ConnectionState.waiting) {
+                                childdata = snap.data!.docs as List;
+                                driverids = [];
+                                childdata.forEach((element) {
+                                  driverids.add(element['driverid']);
+                                  selected = element['driverid'];
+                                  kidid = element.id;
+                                });
+                              }
+                              return ListView.builder(
+                                itemCount: childdata.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Card(
+                                    color: Color(0xff001B61),
+                                    child: InkWell(
+                                      splashColor: Colors.white,
+                                      onTap: () {
+                                        setState(() {
+                                          selected =
+                                              childdata[index]['driverid'];
+                                          kidid = childdata[index].id;
+                                        });
+                                      },
+                                      child: SizedBox(
+                                        width: 300,
+                                        // height: 60,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(12.0),
+                                          child: Row(
+                                            children: [
+                                              CircleAvatar(
+                                                  radius: 20,
+                                                  backgroundColor: Colors.amber,
+                                                  foregroundImage: AssetImage(
+                                                      'assets/images/avatar.png')),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${childdata[index]['name']}',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    '${childdata[index]['school']}',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            })),
                   ],
                 ),
               ),
@@ -335,10 +343,15 @@ void changeselected(driverid,childid){
                           style: ElevatedButton.styleFrom(
                               primary: Colors.white,
                               textStyle: const TextStyle(fontSize: 16)),
-                          onPressed: () async{
+                          onPressed: () async {
                             _auth.signOut();
-                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>accountselect()), (route) => false);
-                            await FlutterBackground.disableBackgroundExecution();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => accountselect()),
+                                (route) => false);
+                            await FlutterBackground
+                                .disableBackgroundExecution();
                             setState(() {});
                           },
                           child: Row(
@@ -363,7 +376,6 @@ void changeselected(driverid,childid){
                   ))
             ],
           )),
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.indigo[400],
         type: BottomNavigationBarType.shifting,
@@ -403,64 +415,84 @@ void changeselected(driverid,childid){
         ],
       ),
       body: Center(
-        child: (selected!=null||_selected==2||_selected==3)?_widgetOptions.elementAt(_selected):Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: SafeArea(child:Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height*0.5,
+        child: (selected != null || _selected == 2 || _selected == 3)
+            ? _widgetOptions.elementAt(_selected)
+            : Container(
+                height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.blue[900],
-                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(50),bottomLeft: Radius.circular(50)),
-                  image: DecorationImage(image: AssetImage('assets/images/schoolvan.png'),
-                    fit: BoxFit.contain,
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      Container(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[900],
+                            borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(50),
+                                bottomLeft: Radius.circular(50)),
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/schoolvan.png'),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'Select Child',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontFamily: 'Cherry Cream Soda',
+                                color: Color.fromARGB(255, 245, 246, 247),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          )),
+                      FutureBuilder<QuerySnapshot>(
+                          future: store
+                              .collection('children')
+                              .where('parentid',
+                                  isEqualTo: _auth.currentUser!.uid)
+                              .get(),
+                          builder: (context, data) {
+                            bool childhave = false;
+                            if (data.connectionState !=
+                                ConnectionState.waiting) {
+                              if (data.data!.docs.isNotEmpty) {
+                                childhave = true;
+                              }
+                            }
+                            return Expanded(
+                              child: Center(
+                                child: Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: (childhave)
+                                        ? Text(
+                                            "Welcome ${_auth.currentUser!.displayName} !!! \nSelect Child from Menu to continue.....",
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              fontFamily: 'Cherry Cream Soda',
+                                              color: Colors.blue[900],
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          )
+                                        : Text(
+                                            "Welcome ${_auth.currentUser!.displayName} !!! \nAdd a child in Profile section.....",
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              fontFamily: 'Cherry Cream Soda',
+                                              color: Colors.blue[900],
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          )),
+                              ),
+                            );
+                          })
+                    ],
                   ),
                 ),
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Select Child',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontFamily: 'Cherry Cream Soda',
-                        color: Color.fromARGB(255, 245, 246, 247),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                )
               ),
-              FutureBuilder<QuerySnapshot>(future:store.collection('children').where('parentid',isEqualTo: _auth.currentUser!.uid).get() ,builder: (context,data){
-                bool childhave =false;
-                if(data.connectionState!=ConnectionState.waiting){
-                  if(data.data!.docs.isNotEmpty){
-                    childhave =true;
-
-                  }
-                }
-                return Expanded(child: Center(
-                  child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: (childhave)?Text("Welcome ${_auth.currentUser!.displayName} !!! \nSelect Child from Menu to continue.....",style: TextStyle(
-                        fontSize: 25,
-                        fontFamily: 'Cherry Cream Soda',
-                        color: Colors.blue[900],
-                        fontWeight: FontWeight.w700,
-                      ),):Text("Welcome ${_auth.currentUser!.displayName} !!! \nAdd a child in Profile section.....",style: TextStyle(
-                        fontSize: 25,
-                        fontFamily: 'Cherry Cream Soda',
-                        color: Colors.blue[900],
-                        fontWeight: FontWeight.w700,
-                      ),)
-                  ),
-                ),);
-
-              })
-            ],
-          ),),
-        ),
       ),
     );
   }
