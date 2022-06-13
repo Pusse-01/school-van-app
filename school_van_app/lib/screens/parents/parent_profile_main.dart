@@ -6,7 +6,6 @@ import 'package:flutter_background/flutter_background.dart';
 import 'package:school_van_app/loadingscreen.dart';
 import 'package:school_van_app/screens/parents/parents_profile.dart';
 import 'package:expandable/expandable.dart';
-
 import '../../auth/accountselect.dart';
 
 class ParentProfileMain extends StatefulWidget {
@@ -34,7 +33,7 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                 child: CircleAvatar(
                     radius: MediaQuery.of(context).size.height * 0.08,
                     backgroundColor: Colors.amber,
-                    foregroundImage: AssetImage('assets/images/avatar.png')),
+                    foregroundImage: (_auth.currentUser!.photoURL==null)?AssetImage('assets/images/avatar.png'):NetworkImage(_auth.currentUser!.photoURL!) as ImageProvider,)
               ),
               Text(
                 "${_auth.currentUser!.displayName}",

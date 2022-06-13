@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/screens/driver/driverhome.dart';
+import 'package:school_van_app/screens/parents/parent_profile_main.dart';
 import 'package:school_van_app/screens/parents/parents_dashboard.dart';
 
 class Parents_profile extends StatefulWidget {
@@ -41,7 +42,7 @@ class _Parents_profileState extends State<Parents_profile> {
 
   @override
   Widget build(BuildContext context) {
-    String? pic = "_auth.currentUser!.photoURL";
+    String? pic = _auth.currentUser!.photoURL;
     if (index == 1) {
       if (loading) {
         return Scaffold(
@@ -346,6 +347,7 @@ class _Parents_profileState extends State<Parents_profile> {
                                             contact.text.trim();
                                       }
                                       if (fullName.text.trim().isNotEmpty) {
+                                       await  _auth.currentUser!.updateDisplayName(fullName.text.trim());
                                         newdata['name'] =
                                             fullName.text.trim();
                                       }
@@ -405,7 +407,7 @@ class _Parents_profileState extends State<Parents_profile> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => Parent_Dashboard()));
+                                                  builder: (context) => ParentProfileMain()));
                                         }
                                       } catch (e) {
                                         setState(() {
