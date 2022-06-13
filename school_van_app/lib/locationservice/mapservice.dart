@@ -247,8 +247,8 @@ class _locationfindState extends State<locationfind> {
                             });
                           });
                         }
-                        if(trip!=""||started){
-                          if (!started) {
+
+                          if (!started&&trip!="") {
                             backgroundservice();
                             QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
                             List students = data.docs;
@@ -286,8 +286,10 @@ class _locationfindState extends State<locationfind> {
                               }
                             });
 
-                          } else {
-                            await FlutterBackground.disableBackgroundExecution();
+                          } else if(started){
+                            if(FlutterBackground.isBackgroundExecutionEnabled){
+                              await FlutterBackground.disableBackgroundExecution();
+                            }
                             QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
                             List students = data.docs;
 
@@ -301,7 +303,7 @@ class _locationfindState extends State<locationfind> {
                           setState(() {
                             started = !started;
                           });
-                        }
+
                       },
                       child: (started) ? Text('End Trip') : Text('Start Trip'),
                       style: ElevatedButton.styleFrom(
