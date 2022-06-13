@@ -11,6 +11,7 @@ import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/screens/driver/driverhome.dart';
 import 'package:school_van_app/screens/parents/parent_profile_main.dart';
 import 'package:school_van_app/screens/parents/parents_dashboard.dart';
+import 'package:school_van_app/screens/parents/parents_home.dart';
 
 class Parents_profile extends StatefulWidget {
   const Parents_profile({Key? key}) : super(key: key);
@@ -407,7 +408,7 @@ class _Parents_profileState extends State<Parents_profile> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => ParentProfileMain()));
+                                                  builder: (context) => Parent_Home()));
                                         }
                                       } catch (e) {
                                         setState(() {
