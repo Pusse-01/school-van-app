@@ -31,7 +31,7 @@ class _Child_InfoState extends State<Child_Info> {
               style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue[900]),
+                  color: Colors.black),
             ),
           ),
           Expanded(
@@ -55,6 +55,15 @@ class _Child_InfoState extends State<Child_Info> {
                             padding: EdgeInsets.all(8),
                             child: Container(
                               decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(
+                                          0, 3), // changes position of shadow
+                                    ),
+                                  ],
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10)),
                               padding: EdgeInsets.all(
@@ -65,7 +74,8 @@ class _Child_InfoState extends State<Child_Info> {
                                     children: [
                                       Icon(
                                         Icons.person,
-                                        size: 30,
+                                        size: 18,
+                                        color: Colors.indigo[600],
                                       ),
                                       SizedBox(
                                         width:
@@ -75,11 +85,19 @@ class _Child_InfoState extends State<Child_Info> {
                                       Text(students[index].get('name'))
                                     ],
                                   ),
+                                  const Divider(
+                                    height: 10,
+                                    thickness: 0.6,
+                                    indent: 0,
+                                    endIndent: 0,
+                                    color: Color.fromARGB(255, 212, 211, 211),
+                                  ),
                                   Row(
                                     children: [
                                       Icon(
                                         Icons.school,
-                                        size: 30,
+                                        size: 18,
+                                        color: Colors.indigo[600],
                                       ),
                                       SizedBox(
                                         width:
@@ -89,11 +107,19 @@ class _Child_InfoState extends State<Child_Info> {
                                       Text(students[index].get('school'))
                                     ],
                                   ),
+                                  const Divider(
+                                    height: 10,
+                                    thickness: 0.6,
+                                    indent: 0,
+                                    endIndent: 0,
+                                    color: Color.fromARGB(255, 212, 211, 211),
+                                  ),
                                   Row(
                                     children: [
                                       Icon(
                                         Icons.home,
-                                        size: 30,
+                                        size: 18,
+                                        color: Colors.indigo[600],
                                       ),
                                       SizedBox(
                                         width:
@@ -103,9 +129,16 @@ class _Child_InfoState extends State<Child_Info> {
                                       Text(students[index].get('address'))
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 20,
+                                  const Divider(
+                                    height: 10,
+                                    thickness: 0.6,
+                                    indent: 0,
+                                    endIndent: 0,
+                                    color: Color.fromARGB(255, 212, 211, 211),
                                   ),
+                                  // SizedBox(
+                                  //   height: 20,
+                                  // ),
                                   (details == index)
                                       ? Container(
                                           child: Column(
@@ -114,7 +147,9 @@ class _Child_InfoState extends State<Child_Info> {
                                           children: [
                                             Text(
                                               'Parent Details',
-                                              style: TextStyle(fontSize: 18),
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             SizedBox(
                                               height: 10,
@@ -129,7 +164,7 @@ class _Child_InfoState extends State<Child_Info> {
                                                   radius: MediaQuery.of(context)
                                                           .size
                                                           .width *
-                                                      0.1,
+                                                      0.05,
                                                   backgroundImage: (parent
                                                           .containsKey('pic'))
                                                       ? NetworkImage(
@@ -142,12 +177,19 @@ class _Child_InfoState extends State<Child_Info> {
                                                   width: 10,
                                                 ),
                                                 Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     (parent.containsKey('name'))
                                                         ? Text(
                                                             parent['name'],
                                                             style: TextStyle(
-                                                                fontSize: 18),
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
                                                           )
                                                         : Text(''),
                                                     (parent.containsKey(
@@ -195,8 +237,7 @@ class _Child_InfoState extends State<Child_Info> {
                                             ? Text('Details')
                                             : Text('Hide'),
                                         style: ElevatedButton.styleFrom(
-                                            primary: Color.fromARGB(
-                                                255, 166, 167, 168),
+                                            primary: Color(0xff001B61),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(15))),
@@ -212,7 +253,7 @@ class _Child_InfoState extends State<Child_Info> {
                     return Center(
                         child: Text(
                       "No Passengers",
-                      style: TextStyle(fontSize: 25, color: Colors.blue[900]),
+                      style: TextStyle(fontSize: 16, color: Colors.black),
                     ));
                   }
                 }),

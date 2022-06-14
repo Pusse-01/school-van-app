@@ -100,7 +100,7 @@ class _Driver_profileState extends State<Driver_profile> {
                                     await FlutterBackground
                                         .disableBackgroundExecution();
                                   }
-                                  var wait =await _auth.signOut();
+                                  var wait = await _auth.signOut();
 
                                   Navigator.pushAndRemoveUntil(
                                       context,
@@ -111,8 +111,10 @@ class _Driver_profileState extends State<Driver_profile> {
                                 },
                                 child: Text('Sign Out'),
                                 style: ElevatedButton.styleFrom(
-                                    primary:
-                                        Color.fromARGB(255, 166, 167, 168)),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    primary: Color(0xff001B61)),
                               ),
                               SizedBox(
                                 width: 10,
@@ -123,7 +125,7 @@ class _Driver_profileState extends State<Driver_profile> {
                             height: 20,
                           ),
                           CircleAvatar(
-                              radius: 80,
+                              radius: 60,
                               backgroundColor: Colors.amber,
                               foregroundImage: (pic == null)
                                   ? AssetImage('assets/images/avatar.png')
@@ -161,10 +163,14 @@ class _Driver_profileState extends State<Driver_profile> {
                                 });
                               }
                             },
-                            child: Text('Change Profile photo'),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(width: 2.0, color: Colors.amber),
+                            child: Text(
+                              'Change Profile photo',
+                              style: TextStyle(color: Colors.white),
                             ),
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                primary: Color(0xff001B61)),
                           ),
                           SizedBox(
                             height: 10,

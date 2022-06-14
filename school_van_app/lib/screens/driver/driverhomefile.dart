@@ -113,7 +113,8 @@ class _driversHState extends State<driversH> {
                                         fontSize:
                                             MediaQuery.of(context).size.width *
                                                 0.04,
-                                        color: Colors.white),
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
                                   )
                                 ],
                               ),
@@ -146,7 +147,7 @@ class _driversHState extends State<driversH> {
                                     width: MediaQuery.of(context).size.width *
                                         0.45,
                                     decoration: BoxDecoration(
-                                      color: Colors.amberAccent,
+                                      color: Color.fromARGB(255, 239, 196, 37),
                                     ),
                                     child: Column(
                                       children: [
@@ -180,7 +181,8 @@ class _driversHState extends State<driversH> {
                                                       .size
                                                       .width *
                                                   0.04,
-                                              color: Colors.white),
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
                                         )
                                       ],
                                     ),
@@ -222,6 +224,17 @@ class _driversHState extends State<driversH> {
                                       width: MediaQuery.of(context).size.width *
                                           0.45,
                                       decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color.fromARGB(
+                                                      255, 22, 22, 22)
+                                                  .withOpacity(0.2),
+                                              spreadRadius: 1,
+                                              blurRadius: 1,
+                                              offset: Offset(1,
+                                                  1), // changes position of shadow
+                                            ),
+                                          ],
                                           color: Colors.blue[900],
                                           borderRadius:
                                               BorderRadius.circular(15)),
@@ -649,6 +662,17 @@ class _driversHState extends State<driversH> {
                                     width: MediaQuery.of(context).size.width *
                                         0.45,
                                     decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Color.fromARGB(255, 22, 22, 22)
+                                                    .withOpacity(0.2),
+                                            spreadRadius: 1,
+                                            blurRadius: 1,
+                                            offset: Offset(1,
+                                                1), // changes position of shadow
+                                          ),
+                                        ],
                                         color: Colors.blue[900],
                                         borderRadius:
                                             BorderRadius.circular(15)),
@@ -816,6 +840,17 @@ class _driversHState extends State<driversH> {
                                                     padding: EdgeInsets.all(8),
                                                     child: Container(
                                                       decoration: BoxDecoration(
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors.grey
+                                                                  .withOpacity(
+                                                                      0.3),
+                                                              spreadRadius: 2,
+                                                              blurRadius: 5,
+                                                              offset: Offset(0,
+                                                                  3), // changes position of shadow
+                                                            ),
+                                                          ],
                                                           color: Colors.white,
                                                           borderRadius:
                                                               BorderRadius
@@ -832,7 +867,10 @@ class _driversHState extends State<driversH> {
                                                             children: [
                                                               Icon(
                                                                 Icons.person,
-                                                                size: 30,
+                                                                size: 18,
+                                                                color: Colors
+                                                                        .indigo[
+                                                                    600],
                                                               ),
                                                               SizedBox(
                                                                 width: MediaQuery.of(
@@ -841,16 +879,37 @@ class _driversHState extends State<driversH> {
                                                                         .width *
                                                                     0.05,
                                                               ),
-                                                              Text(students[
-                                                                      index]
-                                                                  .get('name'))
+                                                              Text(
+                                                                students[index]
+                                                                    .get(
+                                                                        'name'),
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              )
                                                             ],
+                                                          ),
+                                                          const Divider(
+                                                            height: 10,
+                                                            thickness: 0.6,
+                                                            indent: 0,
+                                                            endIndent: 0,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    212,
+                                                                    211,
+                                                                    211),
                                                           ),
                                                           Row(
                                                             children: [
                                                               Icon(
                                                                 Icons.school,
-                                                                size: 30,
+                                                                size: 18,
+                                                                color: Colors
+                                                                        .indigo[
+                                                                    600],
                                                               ),
                                                               SizedBox(
                                                                 width: MediaQuery.of(
@@ -865,11 +924,26 @@ class _driversHState extends State<driversH> {
                                                                       'school'))
                                                             ],
                                                           ),
+                                                          const Divider(
+                                                            height: 10,
+                                                            thickness: 0.6,
+                                                            indent: 0,
+                                                            endIndent: 0,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    212,
+                                                                    211,
+                                                                    211),
+                                                          ),
                                                           Row(
                                                             children: [
                                                               Icon(
                                                                 Icons.home,
-                                                                size: 30,
+                                                                size: 18,
+                                                                color: Colors
+                                                                        .indigo[
+                                                                    600],
                                                               ),
                                                               SizedBox(
                                                                 width: MediaQuery.of(
@@ -884,10 +958,22 @@ class _driversHState extends State<driversH> {
                                                                       'address'))
                                                             ],
                                                           ),
+                                                          const Divider(
+                                                            height: 10,
+                                                            thickness: 0.6,
+                                                            indent: 0,
+                                                            endIndent: 0,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    212,
+                                                                    211,
+                                                                    211),
+                                                          ),
                                                           Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
-                                                                    .spaceEvenly,
+                                                                    .end,
                                                             children: [
                                                               ElevatedButton(
                                                                 onPressed:
@@ -959,6 +1045,13 @@ class _driversHState extends State<driversH> {
                                                                     shape: RoundedRectangleBorder(
                                                                         borderRadius:
                                                                             BorderRadius.circular(15))),
+                                                              ),
+                                                              SizedBox(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.02,
                                                               ),
                                                               (triptype == "1")
                                                                   ? (students[index]
