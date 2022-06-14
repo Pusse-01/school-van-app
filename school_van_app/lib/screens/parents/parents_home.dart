@@ -52,6 +52,13 @@ class _Parent_HomeState extends State<Parent_Home> {
             print(_selected);
           });
   }
+  void getids()async{
+    QuerySnapshot q1 =await store.collection('children').where('parentid',isEqualTo: _auth.currentUser!.uid).get();
+    q1.docs.forEach((element){
+      driverids.add(element.get('driverid'));
+      selected =element.get('driverid');
+    });
+  }
 
   void snapshotstream() async {
     Stream details = store
@@ -144,6 +151,7 @@ class _Parent_HomeState extends State<Parent_Home> {
     super.initState();
     backgroundservice();
     snapshotstream();
+    getids();
     getBytesFromAssetfordriver('assets/images/mapbus.png', 75);
     getBytesFromAssetforuser('assets/images/user_location.png', 75);
     NotificationService.init();

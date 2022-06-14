@@ -40,7 +40,7 @@ class _Driver_profileState extends State<Driver_profile> {
 
   @override
   Widget build(BuildContext context) {
-    String? pic = _auth.currentUser!.photoURL;
+    String? pic = _auth.currentUser?.photoURL;
     if (index == 1) {
       if (loading) {
         return Scaffold(
@@ -100,7 +100,7 @@ class _Driver_profileState extends State<Driver_profile> {
                                     await FlutterBackground
                                         .disableBackgroundExecution();
                                   }
-                                  await _auth.signOut();
+                                  var wait =await _auth.signOut();
 
                                   Navigator.pushAndRemoveUntil(
                                       context,
@@ -108,7 +108,6 @@ class _Driver_profileState extends State<Driver_profile> {
                                           builder: (context) =>
                                               accountselect()),
                                       (route) => false);
-                                  setState(() {});
                                 },
                                 child: Text('Sign Out'),
                                 style: ElevatedButton.styleFrom(

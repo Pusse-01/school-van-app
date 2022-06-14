@@ -138,7 +138,8 @@ class _Parents_mapState extends State<Parents_map> {
                               polylines: Set<Polyline>.of(polylines.values),
                             ),
                           ));
-                    }):Expanded(
+                    }):
+                    Expanded(
                         child: Container(
                           child: GoogleMap(
                             initialCameraPosition:
