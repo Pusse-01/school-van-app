@@ -24,7 +24,7 @@ class _locationfindState extends State<locationfind> {
   FirebaseFirestore store = FirebaseFirestore.instance;
   String trip="";
   LocationSettings locationSettings =
-      LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 1);
+  LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 1);
   BitmapDescriptor? customIcon;
   Position? current;
   String? error;
@@ -58,17 +58,17 @@ class _locationfindState extends State<locationfind> {
     QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
     List students = data.docs;
     students.forEach((element) async{
-     DocumentSnapshot d =await store.collection('parent').doc(element.get('parentid')).get();
-     marks.add(Marker(
-         markerId: MarkerId('${d.get('name')}'),
-         icon: BitmapDescriptor.fromBytes(markerIconuser!),
-         position: LatLng(d.get('location')['lat'], d.get('location')['lon']),
-         infoWindow: InfoWindow(
-           title: d.get('name'),
+      DocumentSnapshot d =await store.collection('parent').doc(element.get('parentid')).get();
+      marks.add(Marker(
+          markerId: MarkerId('${d.get('name')}'),
+          icon: BitmapDescriptor.fromBytes(markerIconuser!),
+          position: LatLng(d.get('location')['lat'], d.get('location')['lon']),
+          infoWindow: InfoWindow(
+            title: d.get('name'),
 
-         )
+          )
 
-     ),);
+      ),);
     });
   }
 
@@ -101,7 +101,7 @@ class _locationfindState extends State<locationfind> {
 
   void getdata() async {
     DocumentSnapshot snapshot =
-        await store.collection('location').doc(_auth.currentUser!.uid).get();
+    await store.collection('location').doc(_auth.currentUser!.uid).get();
     if (snapshot.data() != null) {
       started = snapshot.get('status');
     }
@@ -127,204 +127,206 @@ class _locationfindState extends State<locationfind> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.height,
-      child: SafeArea(
-        child: Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Row(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.height,
+          child: SafeArea(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              child: Column(
                 children: [
-                  Text(
-                    "Map",
-                    style: TextStyle(
-                        fontSize: 25.0,
-                        color: Colors.indigo[900],
-                        fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Text(
+                        "Map",
+                        style: TextStyle(
+                            fontSize: 25.0,
+                            color: Colors.indigo[900],
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(child: SizedBox()),
+
+                    ],
                   ),
-                  Expanded(child: SizedBox()),
+                  FutureBuilder<QuerySnapshot>(future: store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get(),builder: (context,parentsid){
+                    List parentids =[];
+                    if(parentsid.connectionState!=ConnectionState.waiting){
+                      parentids =parentsid.data!.docs;
+                    }
+                    if(parentids.isNotEmpty){
+                      return FutureBuilder<QuerySnapshot>(future: store.collection('parent').where('uid',whereIn: parentids).get(),builder: (contet,data){
+                        if(data.connectionState!=ConnectionState.waiting) {
+                          data.data?.docs.forEach((element) {
+                            for (var i in marks) {
+                              if (i.markerId == MarkerId('${element.id}')) {
+                                marks.remove(i);
+                                break;
+                              }
+                            }
+                            marks.add(Marker(
+                                markerId: MarkerId('${element.id}'),
+                                icon: BitmapDescriptor.fromBytes(markerIconuser!),
+                                position: LatLng(element.get('location')['lat'],
+                                    element.get('location')['lon']),
+                                infoWindow: InfoWindow(
+                                  title: '${element.get('name')}',
 
-                ],
-              ),
-              FutureBuilder<QuerySnapshot>(future: store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get(),builder: (context,parentsid){
-                List parentids =[];
-                if(parentsid.connectionState!=ConnectionState.waiting){
-                  parentids =parentsid.data!.docs;
-                }
-                if(parentids.isNotEmpty){
-                  return FutureBuilder<QuerySnapshot>(future: store.collection('parent').where('uid',whereIn: parentids).get(),builder: (contet,data){
-                    if(data.connectionState!=ConnectionState.waiting) {
-                      data.data?.docs.forEach((element) {
-                        for (var i in marks) {
-                          if (i.markerId == MarkerId('${element.id}')) {
-                            marks.remove(i);
-                            break;
-                          }
+                                )
+
+                            ));
+                          });
                         }
-                        marks.add(Marker(
-                            markerId: MarkerId('${element.id}'),
-                            icon: BitmapDescriptor.fromBytes(markerIconuser!),
-                            position: LatLng(element.get('location')['lat'],
-                                element.get('location')['lon']),
-                            infoWindow: InfoWindow(
-                              title: '${element.get('name')}',
+                        return Container();
 
-                            )
 
-                        ));
+
                       });
                     }
                     return Container();
 
-
-
-                  });
-                }
-                return Container();
-
-              }),
-              Container(
-              child: Expanded(
-                child: GoogleMap(
-                  initialCameraPosition:
-                  CameraPosition(target: initital!, zoom: 10),
-                  onMapCreated: (GoogleMapController ctrl) {
-                    control = ctrl;
-                  },
-                  markers: marks,
-                  polylines: Set<Polyline>.of(polylines.values),
-                ),
-              )),
-
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                  }),
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if(!started){
-                          var wait = await showDialog(context: context, builder: (BuildContext context) {
+                      child: Expanded(
+                        child: GoogleMap(
+                          initialCameraPosition:
+                          CameraPosition(target: initital!, zoom: 10),
+                          onMapCreated: (GoogleMapController ctrl) {
+                            control = ctrl;
+                          },
+                          markers: marks,
+                          polylines: Set<Polyline>.of(polylines.values),
+                        ),
+                      )),
 
-                            return StatefulBuilder(builder: (context,setState){
-                              return AlertDialog(
-                                title: Center(child: Text("Select Trip"),),
-                                actions: [
-                                  Container(
-                                    height: MediaQuery.of(context).size.height*0.2,
-                                    width:MediaQuery.of(context).size.width*0.7,
-                                    padding: EdgeInsets.all(10),
-                                    child:
-                                    Column(
-                                        children: [
-                                          Expanded(child: Row(
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if(!started){
+                              var wait = await showDialog(context: context, builder: (BuildContext context) {
+
+                                return StatefulBuilder(builder: (context,setState){
+                                  return AlertDialog(
+                                    title: Center(child: Text("Select Trip"),),
+                                    actions: [
+                                      Container(
+                                        height: MediaQuery.of(context).size.height*0.2,
+                                        width:MediaQuery.of(context).size.width*0.7,
+                                        padding: EdgeInsets.all(10),
+                                        child:
+                                        Column(
                                             children: [
-                                              Expanded(child:  ElevatedButton(onPressed: (){
-                                                trip ="1";
-                                                Navigator.pop(context);
-                                              }, child: Text('Trip 1'),style: ElevatedButton.styleFrom(primary: Colors.blue[900]),),)
-                                            ],
-                                          ),),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child:  ElevatedButton(onPressed: (){
-                                                  trip ="2";
-                                                  Navigator.pop(context);
-                                                }, child: Text('Trip 2'),style: ElevatedButton.styleFrom(primary: Colors.blue[900]),),
-                                              )
-                                            ],
-                                          ),
-                                        ]
-                                    ),
-                                  )
-                                ],
-                              );
-                            });
-                          });
-                        }
-
-                          if (!started&&trip!="") {
-                            backgroundservice();
-                            QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
-                            List students = data.docs;
-                            students.forEach((element) async{
-                              if(trip=="1"){
-                                await store
-                                    .collection('location')
-                                    .doc(_auth.currentUser!.uid)
-                                    .set({'status': true, 'corrds': {},'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"1"});
-                                await store.collection('children').doc(element.id).update(
-                                    {
-                                      'notifications':[],
-                                      'dropped':false,
-                                      'picked_up':false,
-                                      'atschool':false,
-                                      'started':true,
-                                      'notifed':false,
-                                      't2remainder':false
-
-                                    });
-                              }else{
-                                await store.collection('children').doc(element.id).update(
-                                    {
-                                      'notifications':FieldValue.arrayUnion([{
-                                        "time":DateFormat('hh:mm').format(DateTime.now()),
-                                        "type":"Trip 2 Start"
-                                      }]),
-
-                                    });
-                                await store
-                                    .collection('location')
-                                    .doc(_auth.currentUser!.uid)
-                                    .set({'status': true,'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"2"});
-
-
-                              }
-                            });
-                            setState(() {
-                              started = !started;
-                            });
-
-                          } else if(started){
-                            if(FlutterBackground.isBackgroundExecutionEnabled){
-                              await FlutterBackground.disableBackgroundExecution();
+                                              Expanded(child: Row(
+                                                children: [
+                                                  Expanded(child:  ElevatedButton(onPressed: (){
+                                                    trip ="1";
+                                                    Navigator.pop(context);
+                                                  }, child: Text('Trip 1'),style: ElevatedButton.styleFrom(primary: Colors.blue[900]),),)
+                                                ],
+                                              ),),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child:  ElevatedButton(onPressed: (){
+                                                      trip ="2";
+                                                      Navigator.pop(context);
+                                                    }, child: Text('Trip 2'),style: ElevatedButton.styleFrom(primary: Colors.blue[900]),),
+                                                  )
+                                                ],
+                                              ),
+                                            ]
+                                        ),
+                                      )
+                                    ],
+                                  );
+                                });
+                              });
                             }
-                            QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
-                            List students = data.docs;
 
-                            await store
-                                .collection('location')
-                                .doc(_auth.currentUser!.uid)
-                                .update({
-                              'status': false,
-                            });
-                            setState(() {
-                              started = !started;
-                            });
-                          }
+                            if (!started&&trip!="") {
+                              backgroundservice();
+                              QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
+                              List students = data.docs;
+                              students.forEach((element) async{
+                                if(trip=="1"){
+                                  await store
+                                      .collection('location')
+                                      .doc(_auth.currentUser!.uid)
+                                      .set({'status': true, 'corrds': {},'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"1",'alert':[],
+                                    'name':_auth.currentUser!.displayName});
+                                  await store.collection('children').doc(element.id).update(
+                                      {
+                                        'notifications':[],
+                                        'dropped':false,
+                                        'picked_up':false,
+                                        'atschool':false,
+                                        'started':true,
+                                        'notifed':false,
+                                        't2remainder':false,
 
 
-                      },
-                      child: (started) ? Text('End Trip') : Text('Start Trip'),
-                      style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(16),
-                          primary: Colors.indigo[900],
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
+                                      });
+                                }else{
+                                  await store.collection('children').doc(element.id).update(
+                                      {
+                                        'notifications':FieldValue.arrayUnion([{
+                                          "time":DateFormat('hh:mm').format(DateTime.now()),
+                                          "type":"Trip 2 Start"
+                                        }]),
+
+                                      });
+                                  await store
+                                      .collection('location')
+                                      .doc(_auth.currentUser!.uid)
+                                      .set({'status': true,'speed':current!.speed,'name':_auth.currentUser!.displayName,'trip':"2",'alert':[],});
+
+
+                                }
+                              });
+                              setState(() {
+                                started = !started;
+                              });
+
+                            } else if(started){
+                              if(FlutterBackground.isBackgroundExecutionEnabled){
+                                await FlutterBackground.disableBackgroundExecution();
+                              }
+                              QuerySnapshot data =await store.collection('children').where('driverid',isEqualTo: _auth.currentUser!.uid).get();
+                              List students = data.docs;
+
+                              await store
+                                  .collection('location')
+                                  .doc(_auth.currentUser!.uid)
+                                  .update({
+                                'status': false,
+                              });
+                              setState(() {
+                                started = !started;
+                              });
+                            }
+
+
+                          },
+                          child: (started) ? Text('End Trip') : Text('Start Trip'),
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.all(16),
+                              primary: Colors.indigo[900],
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15))),
+                        ),
+                      )
+                    ],
                   )
                 ],
-              )
-            ],
+              ),
+            ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
 
   Future locationservice() async {
@@ -355,10 +357,10 @@ class _locationfindState extends State<locationfind> {
         ),
       );
     });
-   if(mounted){
-     control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-         target: LatLng(current!.latitude, current!.longitude), zoom: 16)));
-   }
+    if(mounted){
+      control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: LatLng(current!.latitude, current!.longitude), zoom: 16)));
+    }
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .distinct()
         .listen((event) async {
@@ -379,10 +381,10 @@ class _locationfindState extends State<locationfind> {
               icon: BitmapDescriptor.fromBytes(markerIcon!),
               position: LatLng(current!.latitude, current!.longitude)),
         );
-       if(mounted){
-         control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-             target: LatLng(event.latitude, event.longitude), zoom: 16)));
-       }
+        if(mounted){
+          control?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+              target: LatLng(event.latitude, event.longitude), zoom: 16)));
+        }
       });
       if (started&&_auth.currentUser!=null) {
         await store.collection('location').doc(_auth.currentUser!.uid).update({
