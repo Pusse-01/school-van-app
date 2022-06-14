@@ -128,6 +128,34 @@ class _parentloginState extends State<parentlogin> {
                               });
                               result = await login.Signin_with_email(
                                   email.text.trim(), password.text.trim());
+                              if (result != null) {
+                                FirebaseFirestore store = FirebaseFirestore
+                                    .instance;
+                                DocumentSnapshot details = await store.collection(
+                                    'parent').doc(result.uid).get();
+
+                                if (details.data() != null) {
+                                  data =details.data() as Map;
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          parentwrapper(data: data,),
+                                    ),
+                                        (route) => false,
+                                  );
+                                }else{
+                                  setState((){
+                                    loading=false;
+                                    error="Login failed";
+                                  });
+                                }
+                              }else{
+                                setState((){
+                                  error ="Login failed";
+                                  loading =false;
+                                });
+                              }
                             } else {
                               setState(() {
                                 error = "Fill all fields";
@@ -136,34 +164,7 @@ class _parentloginState extends State<parentlogin> {
                             setState(() {
                               loading = false;
                             });
-                            if (result != null) {
-                              FirebaseFirestore store = FirebaseFirestore
-                                  .instance;
-                              DocumentSnapshot details = await store.collection(
-                                  'parent').doc(result.uid).get();
 
-                              if (details.data() != null) {
-                                data =details.data() as Map;
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        parentwrapper(data: data,),
-                                  ),
-                                      (route) => false,
-                                );
-                              }else{
-                                setState((){
-                                  loading=false;
-                                  error="Login failed";
-                                });
-                              }
-                            }else{
-                             setState((){
-                               error ="Login failed";
-                               loading =false;
-                             });
-                            }
                           },
                           child: Text('Log in'),
                           style: ElevatedButton.styleFrom(
