@@ -168,6 +168,7 @@ class _Parent_HomeState extends State<Parent_Home> {
       ParentProfileMain()
     ];
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xffE5E5E5),
       key: _drawerKey,
       drawer: Drawer(
@@ -716,22 +717,34 @@ class _Parent_HomeState extends State<Parent_Home> {
                             borderRadius: BorderRadius.only(
                                 bottomRight: Radius.circular(50),
                                 bottomLeft: Radius.circular(50)),
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/schoolvan.png'),
-                              fit: BoxFit.contain,
-                            ),
+
                           ),
-                          child: Container(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              'Welcome ${_auth.currentUser!.displayName} !!! ',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontFamily: 'Cherry Cream Soda',
-                                color: Color.fromARGB(255, 245, 246, 247),
-                                fontWeight: FontWeight.w700,
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  'Welcome ${_auth.currentUser!.displayName} !!! ',
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontFamily: 'Cherry Cream Soda',
+                                    color: Color.fromARGB(255, 245, 246, 247),
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                               ),
-                            ),
+                              SizedBox(height: 8,),
+                              Expanded(child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/images/schoolvan.png'),
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              )),
+                            ],
                           )),
                       FutureBuilder<QuerySnapshot>(
                           future: store
