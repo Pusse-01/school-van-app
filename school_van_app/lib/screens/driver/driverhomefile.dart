@@ -893,7 +893,11 @@ class _driversHState extends State<driversH> {
                                                                 onPressed:
                                                                     () async {
                                                                   if (triptype !=
-                                                                      "2"&&!(students[index].get('notifed'))) {
+                                                                          "2" &&
+                                                                      !(students[
+                                                                              index]
+                                                                          .get(
+                                                                              'notifed'))) {
                                                                     await store
                                                                         .collection(
                                                                             'children')
@@ -937,13 +941,21 @@ class _driversHState extends State<driversH> {
                                                                     );
                                                                   }
                                                                 },
-                                                                child: (students[index].get('notifed'))?Text(
-                                                                    'Notified'):Text(
-                                                                    'Notify parent'),
+                                                                child: (students[
+                                                                            index]
+                                                                        .get(
+                                                                            'notifed'))
+                                                                    ? Text(
+                                                                        'Notified')
+                                                                    : Text(
+                                                                        'Notify parent'),
                                                                 style: ElevatedButton.styleFrom(
-                                                                    primary:(!students[index].get('notifed'))?
-                                                                        Colors.blue[
-                                                                            900]:Colors.lightGreen,
+                                                                    primary: (!students[index].get(
+                                                                            'notifed'))
+                                                                        ? Colors.blue[
+                                                                            900]
+                                                                        : Colors
+                                                                            .lightGreen,
                                                                     shape: RoundedRectangleBorder(
                                                                         borderRadius:
                                                                             BorderRadius.circular(15))),
@@ -968,8 +980,9 @@ class _driversHState extends State<driversH> {
                                                                               });
                                                                             }
                                                                           },
-                                                                          child:
-                                                                          (students[index].get('picked_up') == false) ? Text('Not Arrived'):Text('Arrived'),
+                                                                          child: (students[index].get('picked_up') == false)
+                                                                              ? Text('Arrived')
+                                                                              : Text('Picked up'),
                                                                           style: ElevatedButton.styleFrom(
                                                                               primary: (students[index].get('picked_up') == false) ? Colors.blue[900] : Colors.lightGreen[700],
                                                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
