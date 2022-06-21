@@ -978,70 +978,77 @@ class _driversHState extends State<driversH> {
                                                               ElevatedButton(
                                                                 onPressed:
                                                                     () async {
-                                                                  if (triptype !=
-                                                                          "2" &&
-                                                                      !(students[
-                                                                              index]
-                                                                          .get(
-                                                                              'notifed'))) {
-                                                                    await store
-                                                                        .collection(
-                                                                            'children')
-                                                                        .doc(students[index]
-                                                                            .id)
-                                                                        .update(
-                                                                      {
-                                                                        'notifications':
-                                                                            FieldValue.arrayUnion([
-                                                                          {
-                                                                            'time':
-                                                                                DateFormat('hh:mm').format(DateTime.now()),
-                                                                            'type':
-                                                                                'Notified',
-                                                                          }
-                                                                        ]),
-                                                                        'notifed':
-                                                                            true
-                                                                      },
-                                                                    );
-                                                                  } else {
-                                                                    await store
-                                                                        .collection(
-                                                                            'children')
-                                                                        .doc(students[index]
-                                                                            .id)
-                                                                        .update(
-                                                                      {
-                                                                        'notifications':
-                                                                            FieldValue.arrayUnion([
-                                                                          {
-                                                                            'time':
-                                                                                DateFormat('hh:mm').format(DateTime.now()),
-                                                                            'type':
-                                                                                'Notified trip2',
-                                                                          }
-                                                                        ]),
-                                                                        't2remainder':
-                                                                            true
-                                                                      },
-                                                                    );
+                                                                  if(runingservice){
+                                                                    if (triptype != "2" &&
+                                                                        !(students[
+                                                                        index]
+                                                                            .get(
+                                                                            'notifed'))) {
+                                                                      await store
+                                                                          .collection(
+                                                                          'children')
+                                                                          .doc(students[index]
+                                                                          .id)
+                                                                          .update(
+                                                                        {
+                                                                          'notifications':
+                                                                          FieldValue.arrayUnion([
+                                                                            {
+                                                                              'time':
+                                                                              DateFormat('hh:mm').format(DateTime.now()),
+                                                                              'type':
+                                                                              'Notified',
+                                                                            }
+                                                                          ]),
+                                                                          'notifed':
+                                                                          true
+                                                                        },
+                                                                      );
+                                                                    } else {
+                                                                      await store
+                                                                          .collection(
+                                                                          'children')
+                                                                          .doc(students[index]
+                                                                          .id)
+                                                                          .update(
+                                                                        {
+                                                                          'notifications':
+                                                                          FieldValue.arrayUnion([
+                                                                            {
+                                                                              'time':
+                                                                              DateFormat('hh:mm').format(DateTime.now()),
+                                                                              'type':
+                                                                              'Notified trip2',
+                                                                            }
+                                                                          ]),
+                                                                          't2remainder':
+                                                                          true
+                                                                        },
+                                                                      );
+                                                                    }
                                                                   }
                                                                 },
-                                                                child: (students[
-                                                                            index]
-                                                                        .get(
-                                                                            'notifed'))
+                                                                child: (triptype!="2")?((students[
+                                                                index]
+                                                                    .get(
+                                                                    'notifed'))
                                                                     ? Text(
-                                                                        'Notified')
+                                                                    'Notified')
                                                                     : Text(
-                                                                        'Notify parent'),
+                                                                    'Notify parent')):((students[
+                                                                index]
+                                                                    .get(
+                                                                    't2remainder'))
+                                                                    ? Text(
+                                                                    'Notified')
+                                                                    : Text(
+                                                                    'Notify parent')),
                                                                 style: ElevatedButton.styleFrom(
-                                                                    primary: (!students[index].get(
-                                                                            'notifed'))
-                                                                        ? Colors.blue[
-                                                                            900]
-                                                                        : Colors
-                                                                            .lightGreen,
+                                                                    primary:triptype!="2"?(
+                                                                        !students[index].get('notifed') ? Colors.blue[900] : Colors.lightGreen
+                                                                    ):(
+                                                                        !students[index].get('t2remainder') ? Colors.blue[900] : Colors.lightGreen
+                                                                    ),
                                                                     shape: RoundedRectangleBorder(
                                                                         borderRadius:
                                                                             BorderRadius.circular(15))),
@@ -1056,7 +1063,7 @@ class _driversHState extends State<driversH> {
                                                               (triptype == "1")
                                                                   ? (students[index]
                                                                               .get('picked_up') ==
-                                                                          false)
+                                                                          false
                                                                       ? ElevatedButton(
                                                                           onPressed:
                                                                               () async {
@@ -1080,6 +1087,7 @@ class _driversHState extends State<driversH> {
                                                                               primary: (students[index].get('picked_up') == false) ? Colors.blue[900] : Colors.lightGreen[700],
                                                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                                                                         )
+
                                                                       : ElevatedButton(
                                                                           onPressed:
                                                                               () async {
@@ -1102,6 +1110,7 @@ class _driversHState extends State<driversH> {
                                                                               primary: (students[index].get('atschool') == false) ? Colors.blue[900] : Colors.lightGreen[700],
                                                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                                                                         )
+                                                                    )
                                                                   : ElevatedButton(
                                                                       onPressed:
                                                                           () async {
@@ -1125,7 +1134,7 @@ class _driversHState extends State<driversH> {
                                                                       },
                                                                       child: (!students[index].get('dropped'))
                                                                           ? Text(
-                                                                              'Not Marked')
+                                                                              'Child\'s drop')
                                                                           : Text(
                                                                               'Dropped at home'),
                                                                       style: ElevatedButton.styleFrom(
