@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:school_van_app/screens/driver/childs_info.dart';
 import 'package:school_van_app/screens/driver/driver_dashboard.dart';
 import 'package:school_van_app/screens/driver/driverhomefile.dart';
 import 'package:school_van_app/locationservice/mapservice.dart';
-import 'package:school_van_app/screens/driver/drivers_map.dart';
 import 'package:school_van_app/screens/driver/drivers_profile.dart';
 
 class driverhome extends StatefulWidget {
@@ -16,21 +16,21 @@ class driverhome extends StatefulWidget {
 class _driverhomeState extends State<driverhome> {
   int _selected = 0;
   bool started = false;
-  static const List<Widget> _widgetOptions = <Widget>[
-    Driver_dashboard(),
-    Driver_Map(),
-    Child_Info(),
-    Driver_profile()
-  ];
   void _ontapped(int index) {
     setState(() {
       _selected = index;
     });
   }
 
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff1f3fa),
       body: Container(
           child: <Widget>[
         driversH(
@@ -60,7 +60,7 @@ class _driverhomeState extends State<driverhome> {
             backgroundColor: Colors.indigo[500],
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.airport_shuttle_outlined),
+            icon: Icon(Icons.people_outline),
             label: "Kids",
             backgroundColor: Colors.indigo[600],
           ),

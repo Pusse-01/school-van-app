@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:school_van_app/auth/regparent.dart';
 import 'package:school_van_app/loadingscreen.dart';
+import 'package:school_van_app/screens/driver/driverhome.dart';
+import 'package:school_van_app/screens/parents/parents_home.dart';
+import 'package:school_van_app/wrappers/authwrapper.dart';
+import 'package:school_van_app/wrappers/parentlocationwrapper.dart';
 
 import '../locationservice/mapservice.dart';
 import '../services/authentication.dart';
@@ -17,6 +23,7 @@ class _parentloginState extends State<parentlogin> {
   bool obsecure = true;
   String error = "";
   bool loading = false;
+  Map data={};
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -58,6 +65,10 @@ class _parentloginState extends State<parentlogin> {
                           )),
                       SizedBox(
                         height: 30,
+                      ),
+                      Text(error,style: TextStyle(color: Colors.redAccent),),
+                      SizedBox(
+                        height: 10,
                       ),
                       TextField(
                         controller: email,
@@ -117,6 +128,34 @@ class _parentloginState extends State<parentlogin> {
                               });
                               result = await login.Signin_with_email(
                                   email.text.trim(), password.text.trim());
+                              if (result != null) {
+                                FirebaseFirestore store = FirebaseFirestore
+                                    .instance;
+                                DocumentSnapshot details = await store.collection(
+                                    'parent').doc(result.uid).get();
+
+                                if (details.data() != null) {
+                                  data =details.data() as Map;
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          parentwrapper(data: data,),
+                                    ),
+                                        (route) => false,
+                                  );
+                                }else{
+                                  setState((){
+                                    loading=false;
+                                    error="Login failed";
+                                  });
+                                }
+                              }else{
+                                setState((){
+                                  error ="Login failed";
+                                  loading =false;
+                                });
+                              }
                             } else {
                               setState(() {
                                 error = "Fill all fields";
@@ -125,19 +164,7 @@ class _parentloginState extends State<parentlogin> {
                             setState(() {
                               loading = false;
                             });
-                            if (result != null) {
-                              setState(() {
-                                error = "Log in Failed";
-                              });
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      locationfind(),
-                                ),
-                                (route) => false,
-                              );
-                            }
+
                           },
                           child: Text('Log in'),
                           style: ElevatedButton.styleFrom(
@@ -154,13 +181,15 @@ class _parentloginState extends State<parentlogin> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Already have an account",
+                            "Don't have an account",
                             style: TextStyle(fontSize: 18),
                           ),
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>regparent()));
+                              },
                               child: Text(
-                                "Log In",
+                                "Sign up",
                                 style:
                                     TextStyle(color: Colors.blue, fontSize: 18),
                               ))

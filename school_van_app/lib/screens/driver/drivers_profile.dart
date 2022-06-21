@@ -5,9 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:school_van_app/auth/logindriver.dart';
+import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/screens/driver/driverhome.dart';
+
+import '../../auth/accountselect.dart';
 
 class Driver_profile extends StatefulWidget {
   const Driver_profile({Key? key}) : super(key: key);
@@ -33,15 +37,10 @@ class _Driver_profileState extends State<Driver_profile> {
   File? name;
   bool obsecure = true, loading = false, updated = false;
   var user;
-  @override
-  Future<DocumentSnapshot> getdata() async {
-    String? uid = _auth.currentUser!.uid;
-    return await store.collection("driver").doc(uid).get();
-  }
 
   @override
   Widget build(BuildContext context) {
-    String? pic = _auth.currentUser!.photoURL;
+    String? pic = _auth.currentUser?.photoURL;
     if (index == 1) {
       if (loading) {
         return Scaffold(
@@ -55,10 +54,11 @@ class _Driver_profileState extends State<Driver_profile> {
           ),
         ));
       }
-      return FutureBuilder<List>(
-          future: Future.wait([getdata()]),
+      return FutureBuilder<DocumentSnapshot>(
+          future: store.collection("driver").doc(_auth.currentUser!.uid).get(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.data!.data() == null) {
               return Scaffold(
                   body: SafeArea(
                 child: Center(
@@ -70,7 +70,7 @@ class _Driver_profileState extends State<Driver_profile> {
                 ),
               ));
             } else {
-              user = snapshot.data![0];
+              user = snapshot.data!.data();
               return Scaffold(
                 backgroundColor: Color.fromARGB(245, 249, 249, 249),
                 body: SafeArea(
@@ -78,11 +78,54 @@ class _Driver_profileState extends State<Driver_profile> {
                     child: Container(
                       child: Column(
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(16),
+                                child: Text(
+                                  "Profile",
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue[900]),
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  FirebaseAuth _auth = FirebaseAuth.instance;
+                                  if (FlutterBackground
+                                      .isBackgroundExecutionEnabled) {
+                                    await FlutterBackground
+                                        .disableBackgroundExecution();
+                                  }
+                                  var wait = await _auth.signOut();
+
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              accountselect()),
+                                      (route) => false);
+                                },
+                                child: Text('Sign Out'),
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    primary: Color(0xff001B61)),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
                           SizedBox(
                             height: 20,
                           ),
                           CircleAvatar(
-                              radius: 80,
+                              radius: 60,
                               backgroundColor: Colors.amber,
                               foregroundImage: (pic == null)
                                   ? AssetImage('assets/images/avatar.png')
@@ -120,10 +163,22 @@ class _Driver_profileState extends State<Driver_profile> {
                                 });
                               }
                             },
-                            child: Text('Change Profile photo'),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(width: 2.0, color: Colors.amber),
+                            child: Text(
+                              'Change Profile photo',
+                              style: TextStyle(color: Colors.white),
                             ),
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                primary: Color(0xff001B61)),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Edit Profile",
+                            style: TextStyle(
+                                fontSize: 16.0, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
                             height: 10,
@@ -209,7 +264,10 @@ class _Driver_profileState extends State<Driver_profile> {
                                           },
                                           child: Text(
                                             'Next',
-                                            style: TextStyle(fontSize: 18),
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: Color.fromARGB(
+                                                    255, 166, 167, 168)),
                                           ))
                                     ],
                                   ),
@@ -245,25 +303,6 @@ class _Driver_profileState extends State<Driver_profile> {
               child: Container(
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(
-                              Icons.arrow_back,
-                              size: 30.0,
-                            )),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.2,
-                        ),
-                        Text(
-                          'Edit Profile',
-                          style: TextStyle(fontSize: 25),
-                        ),
-                      ],
-                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -349,7 +388,10 @@ class _Driver_profileState extends State<Driver_profile> {
                                     },
                                     child: Text(
                                       'Back',
-                                      style: TextStyle(fontSize: 18),
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color.fromARGB(
+                                              255, 166, 167, 168)),
                                     )),
                                 TextButton(
                                     onPressed: () async {
@@ -436,7 +478,10 @@ class _Driver_profileState extends State<Driver_profile> {
                                     },
                                     child: Text(
                                       'Save',
-                                      style: TextStyle(fontSize: 18),
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color.fromARGB(
+                                              255, 166, 167, 168)),
                                     ))
                               ],
                             ),

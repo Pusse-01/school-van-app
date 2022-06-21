@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:school_van_app/auth/logindriver.dart';
+import 'package:school_van_app/auth/loginparent.dart';
 import 'package:school_van_app/auth/regdriver.dart';
 import 'package:school_van_app/auth/regparent.dart';
-import 'package:school_van_app/auth/verifyPhoneParent.dart';
 
 class accountselect extends StatelessWidget {
   const accountselect({Key? key}) : super(key: key);
@@ -39,7 +40,7 @@ class accountselect extends StatelessWidget {
                           Text(
                             'Lets go...',
                             style: TextStyle(
-                              fontSize: 60,
+                              fontSize: 40,
                               fontFamily: 'Cherry Cream Soda',
                               color: Color.fromARGB(255, 245, 246, 247),
                               fontWeight: FontWeight.w700,
@@ -69,7 +70,7 @@ class accountselect extends StatelessWidget {
                         child: AutoSizeText(
                           'Parent app allows them to track the school bus location and get real-time notifications regarding the students\' location...',
                           style: TextStyle(
-                            fontSize: 20.0,
+                            fontSize: 16.0,
                             color: Colors.white,
                           ),
                           maxLines: 6,
@@ -89,10 +90,9 @@ class accountselect extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => regdriver()));
+                                builder: (context) => logindriver()));
                       },
                       child: Container(
-                        height: MediaQuery.of(context).size.height * 0.2,
                         width: MediaQuery.of(context).size.width * 0.4,
                         color: Colors.redAccent[300],
                         padding: EdgeInsets.all(16),
@@ -139,10 +139,9 @@ class accountselect extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ParentVerify()));
+                                builder: (context) => parentlogin()));
                       },
                       child: Container(
-                        height: MediaQuery.of(context).size.height * 0.2,
                         width: MediaQuery.of(context).size.width * 0.4,
                         color: Colors.blueAccent[300],
                         padding: EdgeInsets.all(16),
