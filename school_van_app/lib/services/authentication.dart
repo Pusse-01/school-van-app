@@ -31,13 +31,27 @@ class authService{
     }
   }
 
-  Future registerwithEmaildriver(String email, String Password,String name,String license,String NIC,String Phoneno,String address) async {
+  Future registerwithEmaildriver(
+      String name,
+      String license,
+      String NIC,
+      String Phoneno,
+      String address,
+      String verificationCode,
+      String smsCode
+      ) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: Password);
+      UserCredential result = await _auth.signInWithCredential(
+          PhoneAuthProvider.credential(
+              verificationId: verificationCode,
+              smsCode: smsCode
+          )
+      );
+      // UserCredential result = await _auth.createUserWithEmailAndPassword(
+      //     email: email, password: Password);
       User? newuser = result.user;
       databaseService d1= databaseService(uid: newuser!.uid);
-      d1.setdriverdata(name, Phoneno, email,license, NIC, address);
+      d1.setdriverdata(name, Phoneno,license, NIC, address);
       await newuser.updateDisplayName(name);
       return _userFromfirebase(newuser);
     } catch (e) {
@@ -45,13 +59,23 @@ class authService{
       return null;
     }
   }
-  Future registerwithEmailparent(String email, String Password,String name,String Phoneno,String address) async {
+  Future registerwithEmailparent(
+      String name,
+      String Phoneno,
+      String address,
+      String verificationCode,
+      String smsCode
+      ) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: Password);
+      UserCredential result = await _auth.signInWithCredential(
+          PhoneAuthProvider.credential(
+              verificationId: verificationCode,
+              smsCode: smsCode
+          )
+      );
       User? newuser = result.user;
       databaseService d1= databaseService(uid: newuser!.uid);
-      d1.setparentdata(name, Phoneno, email, address);
+      d1.setparentdata(name, Phoneno, address);
       await newuser.updateDisplayName(name);
       return _userFromfirebase(newuser);
     } catch (e) {

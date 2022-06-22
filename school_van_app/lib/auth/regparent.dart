@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/auth/loginparent.dart';
+import 'package:school_van_app/auth/parentOtpController.dart';
 import 'package:school_van_app/loadingscreen.dart';
 import 'package:school_van_app/screens/parents/parents_home.dart';
 import 'package:school_van_app/wrappers/parentlocationwrapper.dart';
@@ -17,14 +19,14 @@ class regparent extends StatefulWidget {
 
 class _regparentState extends State<regparent> {
   TextEditingController name = TextEditingController();
-  TextEditingController email = TextEditingController();
-  TextEditingController contact = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirm = TextEditingController();
   TextEditingController address = TextEditingController();
   bool obsecure = true;
   bool loading =false;
   String error ='';
+  String countryCode = "";
 
   @override
   Widget build(BuildContext context) {
@@ -93,34 +95,46 @@ class _regparentState extends State<regparent> {
                      SizedBox(
                        height: 10,
                      ),
-                     TextField(
-                       controller: email,
-                       decoration: InputDecoration(
-                           border: OutlineInputBorder(
-                             borderRadius: BorderRadius.circular(15.0),
+                     Row(
+                       children: [
+                         SizedBox(
+                           width: 100,
+                           height: 60,
+                           child: CountryCodePicker(
+                             onChanged: (country) => {
+                               setState(() {
+                                 countryCode = country.dialCode!;
+                               })
+                             },
+                             initialSelection: "LK",
+                             showCountryOnly: false,
+                             showOnlyCountryWhenClosed: false,
+                             favorite: ["+94", "LK"],
                            ),
-                           contentPadding: EdgeInsets.all(15),
-                           filled: true,
-                           fillColor: Colors.white,
-                           hintText: "Email",
-                           hintStyle:
-                           TextStyle(color: Colors.grey, fontSize: 15.0)),
-                     ),
-                     SizedBox(
-                       height: 10,
-                     ),
-                     TextField(
-                       controller: contact,
-                       decoration: InputDecoration(
-                           border: OutlineInputBorder(
-                             borderRadius: BorderRadius.circular(15.0),
-                           ),
-                           contentPadding: EdgeInsets.all(15),
-                           filled: true,
-                           fillColor: Colors.white,
-                           hintText: "Contact number",
-                           hintStyle:
-                           TextStyle(color: Colors.grey, fontSize: 15.0)),
+                         ),
+                         Container(
+                           width: 200,
+                           child: TextField(
+                               controller: phoneNumber,
+                               maxLength: 9,
+                               keyboardType: TextInputType.number,
+                               decoration: InputDecoration(
+                                 prefix: Padding(
+                                   padding: EdgeInsets.all(4),
+                                   child: Text(countryCode),
+                                 ),
+                                 border: OutlineInputBorder(
+                                   borderRadius: BorderRadius.circular(15.0),
+                                 ),
+                                 contentPadding: EdgeInsets.all(15),
+                                 fillColor: Colors.white,
+                                 filled: true,
+                                 hintText: "Phone Number",
+                                 hintStyle:
+                                 TextStyle(color: Colors.grey, fontSize: 15.0),
+                               )),
+                         ),
+                       ],
                      ),
                      SizedBox(
                        height: 10,
@@ -141,64 +155,6 @@ class _regparentState extends State<regparent> {
                      SizedBox(
                        height: 10,
                      ),
-                     TextField(
-                         controller: password,
-                         obscureText: obsecure,
-                         decoration: InputDecoration(
-                             border: OutlineInputBorder(
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             contentPadding: EdgeInsets.all(15),
-                             fillColor: Colors.white,
-                             filled: true,
-                             hintText: "Password",
-                             hintStyle:
-                             TextStyle(color: Colors.grey, fontSize: 15.0),
-                             suffix: InkWell(
-                               onTap: () {
-                                 setState(() {
-                                   obsecure = !obsecure;
-                                 });
-                               },
-                               child: Icon(
-                                 (obsecure)
-                                     ? Icons.visibility_outlined
-                                     : Icons.visibility_off_outlined,
-                                 size: 20,
-                               ),
-                             ))),
-                     SizedBox(
-                       height: 10,
-                     ),
-                     TextField(
-                         controller: confirm,
-                         obscureText: obsecure,
-                         decoration: InputDecoration(
-                             border: OutlineInputBorder(
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             contentPadding: EdgeInsets.all(15),
-                             fillColor: Colors.white,
-                             filled: true,
-                             hintText: "Confirm Password",
-                             hintStyle:
-                             TextStyle(color: Colors.grey, fontSize: 15.0),
-                             suffix: InkWell(
-                               onTap: () {
-                                 setState(() {
-                                   obsecure = !obsecure;
-                                 });
-                               },
-                               child: Icon(
-                                 (obsecure)
-                                     ? Icons.visibility_outlined
-                                     : Icons.visibility_off_outlined,
-                                 size: 20,
-                               ),
-                             ))),
-                     SizedBox(
-                       height: 10,
-                     ),
                      Container(
                        width: MediaQuery
                            .of(context)
@@ -208,15 +164,29 @@ class _regparentState extends State<regparent> {
                          onPressed: () async {
                            dynamic result;
                            authService login = authService();
-                           if (email.text.trim() != "" &&
-                               password.text.trim() != ""&&contact.text.trim()!=''&& address.text.trim()!=''&&confirm.text.trim()==password.text.trim()) {
+                           if (
+                               phoneNumber.text.trim()!=''&&
+                               address.text.trim()!=''&&
+                              countryCode!=""
+                           ) {
+
+                             Navigator.of(context).push(
+                                 MaterialPageRoute(
+                                   builder: (c) =>
+                                       OTPControllerScreen(
+                                         phone:phoneNumber.text,
+                                         countryCode: countryCode ,
+                                         address:address.text.trim() ,
+                                         name: name.text.trim(),
+                                       ),
+                                 )
+                             );
 
                              setState(() {
                                loading = true;
 
                              });
-                             result = await login.registerwithEmailparent(
-                                 email.text.trim(), password.text.trim(),name.text,contact.text.trim(),address.text.trim());
+
                              if (result != null) {
                                FirebaseFirestore store = FirebaseFirestore
                                    .instance;

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:school_van_app/auth/accountselect.dart';
+import 'package:school_van_app/auth/driverNumberVerify.dart';
 import 'package:school_van_app/auth/regdriver.dart';
 import 'package:school_van_app/loadingscreen.dart';
 import 'package:school_van_app/services/authentication.dart';
@@ -17,11 +19,12 @@ class logindriver extends StatefulWidget {
 }
 
 class _logindriverState extends State<logindriver> {
-  TextEditingController email = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
   TextEditingController password = TextEditingController();
+  String countryCode = "";
   bool obsecure = true;
-  bool loading = false;
   String error = "";
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -46,7 +49,7 @@ class _logindriverState extends State<logindriver> {
                         child: Row(
                           children: [
                             Text(
-                              'Login',
+                              'Driver',
                               style: TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.bold),
                             )
@@ -59,113 +62,73 @@ class _logindriverState extends State<logindriver> {
                       Container(
                           height: MediaQuery.of(context).size.height * 0.25,
                           child: Image(
-                            image:
-                                AssetImage('assets/images/driver_auth_img.png'),
+                            image: AssetImage('assets/images/schoolvan.png'),
                           )),
                       SizedBox(
                         height: 30,
                       ),
-                      Text(
-                        error,
-                        style: TextStyle(color: Colors.redAccent),
+
+                      SizedBox(
+                        width: 400,
+                        height: 60,
+                        child:  CountryCodePicker(
+                          onChanged: (country)=>{
+                            setState((){
+                              countryCode = country.dialCode!;
+                            })
+                          },
+                          initialSelection: "LK",
+                          showCountryOnly: false,
+                          showOnlyCountryWhenClosed: false,
+                          favorite: ["+94","LK"],
+                        ),
                       ),
                       TextField(
-                        controller: email,
-                        decoration: InputDecoration(
+                          controller: phoneNumber,
+                          maxLength: 9,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            prefix: Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Text(countryCode),
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.0),
                             ),
                             contentPadding: EdgeInsets.all(15),
-                            filled: true,
                             fillColor: Colors.white,
-                            hintText: "email",
+                            filled: true,
+                            hintText: "Phone Number",
                             hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 15.0)),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                          controller: password,
-                          obscureText: obsecure,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              contentPadding: EdgeInsets.all(15),
-                              fillColor: Colors.white,
-                              filled: true,
-                              hintText: "Password",
-                              hintStyle:
-                                  TextStyle(color: Colors.grey, fontSize: 15.0),
-                              suffix: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    obsecure = !obsecure;
-                                  });
-                                },
-                                child: Icon(
-                                  (obsecure)
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  size: 20,
-                                ),
-                              ))),
+                            TextStyle(color: Colors.grey, fontSize: 15.0),
+                          )),
                       SizedBox(
                         height: 40,
                       ),
                       Container(
+                        margin: EdgeInsets.all(20),
+                          child: Text(error,style: TextStyle(color:Colors.red),)),
+                      Container(
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: ElevatedButton(
                           onPressed: () async {
-                            dynamic result;
-                            authService login = authService();
-                            if (email.text.trim() != "" &&
-                                password.text.trim() != "") {
-                              setState(() {
-                                loading = true;
-                              });
-                              result = await login.Signin_with_email(
-                                  email.text.trim(), password.text.trim());
-                            } else {
+                            if(phoneNumber.text.trim()!=""&&countryCode!=""){
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (c) =>
+                                        DriverNumberVerify(
+                                          phone:phoneNumber.text,
+                                          countryCode: countryCode ,
+                                        ),
+                                  )
+                              );
+                            }else{
                               setState(() {
                                 error = "Fill all fields";
                               });
                             }
-                            if (result != null) {
-                                  FirebaseFirestore store = FirebaseFirestore
-                                      .instance;
-                                  DocumentSnapshot details = await store.collection(
-                                  'driver').doc(result.uid).get();
-
-                                  if (details.data() != null) {
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            driverhome(),
-                                      ),
-                                          (route) => false,
-                                    );
-                                  }else{
-                                   setState((){
-                                     error="Login Failed";
-                                     loading=false;
-                                     FirebaseAuth _auth =FirebaseAuth.instance;
-                                     _auth.signOut();
-                                   });
-                                  }
-                              setState(() {
-                                loading = false;
-                              });
-                            }else{
-                              setState(() {
-                                error = "Log in Failed";
-                                loading = false;
-                              });
-                            }
                           },
-                          child: Text('Log in'),
+                          child: Text('Login'),
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.all(16),
                               primary: Colors.indigo[900],
@@ -180,20 +143,17 @@ class _logindriverState extends State<logindriver> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "I don't have an account",
+                            "Don't have an account",
                             style: TextStyle(fontSize: 18),
                           ),
                           TextButton(
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => regdriver()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>regdriver()));
                               },
                               child: Text(
-                                "Sign Up",
+                                "Register",
                                 style:
-                                    TextStyle(color: Colors.blue, fontSize: 18),
+                                TextStyle(color: Colors.blue, fontSize: 18),
                               ))
                         ],
                       ),

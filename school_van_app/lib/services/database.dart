@@ -9,13 +9,12 @@ class databaseService{
   final CollectionReference driver = FirebaseFirestore.instance.collection('driver');
 
 
-  Future ? setdriverdata(String ? name, String ?Phoneno, String ?email,String ?  license,String ? NIC,String address) async {
+  Future ? setdriverdata(String ? name, String ?Phoneno, String ?  license,String ? NIC,String address) async {
     return await driver.doc(uid).set(
         {
           'uid':uid,
           'name': name,
           'Contact_No': Phoneno,
-          'Email': email,
           "address":address,
           'NIC':NIC,
           'license':license,
@@ -25,13 +24,12 @@ class databaseService{
         }
     );
   }
-  Future ? setparentdata(String ? name, String ?Phoneno, String ?email,String address) async {
+  Future ? setparentdata(String ? name, String ?Phoneno,String address) async {
     return await parent.doc(uid).set(
         {
           'uid':uid,
           'name': name,
           'Contact_No': Phoneno,
-          'Email': email,
           "address":address,
 
         }

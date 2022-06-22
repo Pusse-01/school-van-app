@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:school_van_app/auth/driverNumberVerify.dart';
 import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/auth/loginparent.dart';
+import 'package:school_van_app/auth/parentNumberVerify.dart';
 import 'package:school_van_app/auth/regdriver.dart';
 import 'package:school_van_app/auth/regparent.dart';
 
@@ -90,7 +92,7 @@ class accountselect extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => logindriver()));
+                                builder: (context) => regdriver()));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.4,
@@ -139,7 +141,7 @@ class accountselect extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => parentlogin()));
+                                builder: (context) => regparent()));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.4,

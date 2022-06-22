@@ -1,11 +1,12 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:school_van_app/auth/driverOtpController.dart';
 import 'package:school_van_app/auth/logindriver.dart';
 import 'package:school_van_app/loadingscreen.dart';
 import 'package:school_van_app/locationservice/mapservice.dart';
 import 'package:school_van_app/services/authentication.dart';
 
 import '../screens/driver/driverhome.dart';
-
 
 class regdriver extends StatefulWidget {
   const regdriver({Key? key}) : super(key: key);
@@ -16,19 +17,18 @@ class regdriver extends StatefulWidget {
 
 class _regdriverState extends State<regdriver> {
   TextEditingController name = TextEditingController();
-  TextEditingController email = TextEditingController();
-  TextEditingController contact = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController confirm = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
   TextEditingController driving = TextEditingController();
   TextEditingController NIC = TextEditingController();
   TextEditingController address = TextEditingController();
   bool obsecure = true;
-  bool loading =false;
+  bool loading = false;
   String error = "";
+  String countryCode = "";
+
   @override
   Widget build(BuildContext context) {
-    if(!loading){
+    if (!loading) {
       return Scaffold(
         body: ConstrainedBox(
           constraints: BoxConstraints(
@@ -79,40 +79,51 @@ class _regdriverState extends State<regdriver> {
                             fillColor: Colors.white,
                             hintText: "Name",
                             hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 15.0)),
+                                TextStyle(color: Colors.grey, fontSize: 15.0)),
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      TextField(
-                        controller: email,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            height: 60,
+                            child: CountryCodePicker(
+                              onChanged: (country) => {
+                                setState(() {
+                                  countryCode = country.dialCode!;
+                                })
+                              },
+                              initialSelection: "LK",
+                              showCountryOnly: false,
+                              showOnlyCountryWhenClosed: false,
+                              favorite: ["+94", "LK"],
                             ),
-                            contentPadding: EdgeInsets.all(15),
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: "Email",
-                            hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 15.0)),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                        controller: contact,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            contentPadding: EdgeInsets.all(15),
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: "Contact number",
-                            hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 15.0)),
+                          ),
+                          Container(
+                            width: 200,
+                            child: TextField(
+                                controller: phoneNumber,
+                                maxLength: 9,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  prefix: Padding(
+                                    padding: EdgeInsets.all(4),
+                                    child: Text(countryCode),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  contentPadding: EdgeInsets.all(15),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  hintText: "Phone Number",
+                                  hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 15.0),
+                                )),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: 10,
@@ -128,7 +139,7 @@ class _regdriverState extends State<regdriver> {
                             fillColor: Colors.white,
                             hintText: "Driving license",
                             hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 15.0)),
+                                TextStyle(color: Colors.grey, fontSize: 15.0)),
                       ),
                       SizedBox(
                         height: 10,
@@ -144,7 +155,7 @@ class _regdriverState extends State<regdriver> {
                             fillColor: Colors.white,
                             hintText: "NIC",
                             hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 15.0)),
+                                TextStyle(color: Colors.grey, fontSize: 15.0)),
                       ),
                       SizedBox(
                         height: 10,
@@ -160,66 +171,8 @@ class _regdriverState extends State<regdriver> {
                             fillColor: Colors.white,
                             hintText: "Address",
                             hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 15.0)),
+                                TextStyle(color: Colors.grey, fontSize: 15.0)),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                          controller: password,
-                          obscureText: obsecure,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              contentPadding: EdgeInsets.all(15),
-                              fillColor: Colors.white,
-                              filled: true,
-                              hintText: "Password",
-                              hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15.0),
-                              suffix: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    obsecure = !obsecure;
-                                  });
-                                },
-                                child: Icon(
-                                  (obsecure)
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  size: 20,
-                                ),
-                              ))),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                          controller: confirm,
-                          obscureText: obsecure,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              contentPadding: EdgeInsets.all(15),
-                              fillColor: Colors.white,
-                              filled: true,
-                              hintText: "Confirm Password",
-                              hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 15.0),
-                              suffix: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    obsecure = !obsecure;
-                                  });
-                                },
-                                child: Icon(
-                                  (obsecure)
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  size: 20,
-                                ),
-                              ))),
                       SizedBox(
                         height: 10,
                       ),
@@ -227,53 +180,36 @@ class _regdriverState extends State<regdriver> {
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: ElevatedButton(
                           onPressed: () async {
-                            if (email.text.trim() != "" &&
-                                password.text.trim() != "" &&
+                            if (
                                 name.text.trim() != "" &&
                                 driving.text.trim().isNotEmpty &&
                                 NIC.text.trim().isNotEmpty &&
-                                contact.text.trim().isNotEmpty &&
+                                phoneNumber.text.trim().isNotEmpty &&
                                 address.text.trim().isNotEmpty) {
-                              if (confirm.text.trim() != password.text.trim()) {
-                                setState(() {
-                                  error = "Passwords should match";
-                                });
-                              } else {
-                                authService auth = authService();
-                                setState((){
-                                  loading=true;
-                                });
-                                dynamic result =
-                                await auth.registerwithEmaildriver(
-                                    email.text.trim().toLowerCase(),
-                                    password.text.trim(),
-                                    name.text.trim(),
-                                    driving.text.trim(),
-                                    NIC.text.trim(),
-                                    contact.text.trim(),
-                                    address.text);
-                                if (result != null) {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          driverhome(),
-                                    ),
-                                        (route) => false,
-                                  );
-                                  setState((){
-                                    loading=false;
-                                  });
-                                }else{
-                                  setState((){
-                                    error ='Registration Failed';
-                                    loading=false;
-                                  });
-                                }
-                              }
+                              authService auth = authService();
+                              setState(() {
+                                loading = true;
+                              });
+
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (c) =>
+                                        OTPControllerScreen(
+                                          phone:phoneNumber.text,
+                                          countryCode: countryCode ,
+                                          address:address.text.trim() ,
+                                          nic: NIC.text.trim(),
+                                          driving: driving.text.trim(),
+                                          name: name.text.trim(),
+                                        ),
+                                  )
+                              );
+
+
+
                             } else {
-                              setState((){
-                                loading=false;
+                              setState(() {
+                                loading = false;
                               });
                               setState(() {
                                 error = "Fill all fields";
@@ -308,7 +244,7 @@ class _regdriverState extends State<regdriver> {
                               child: Text(
                                 "Log In",
                                 style:
-                                TextStyle(color: Colors.blue, fontSize: 18),
+                                    TextStyle(color: Colors.blue, fontSize: 18),
                               ))
                         ],
                       ),
@@ -320,7 +256,7 @@ class _regdriverState extends State<regdriver> {
           ),
         ),
       );
-    }else{
+    } else {
       return loadfadingcube();
     }
   }

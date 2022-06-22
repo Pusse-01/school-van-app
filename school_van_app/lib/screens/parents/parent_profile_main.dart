@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
@@ -93,9 +94,10 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                                TextEditingController();
                                TextEditingController school =
                                TextEditingController();
-                               TextEditingController email =
+                               TextEditingController phoneNumber =
                                TextEditingController();
                                String error = "";
+                               String countryCode = "";
                                bool loading = false;
                                return StatefulBuilder(
                                    builder: (context, setState) {
@@ -163,27 +165,46 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                                                SizedBox(
                                                  height: 10,
                                                ),
-                                               Container(
-                                                 child: TextField(
-                                                   controller: email,
-                                                   decoration: InputDecoration(
-                                                       border:
-                                                       OutlineInputBorder(
-                                                         borderRadius:
-                                                         BorderRadius
-                                                             .circular(
-                                                             15.0),
-                                                       ),
-                                                       contentPadding:
-                                                       EdgeInsets.all(15),
-                                                       filled: true,
-                                                       fillColor: Colors.white,
-                                                       hintText:
-                                                       "Driver email",
-                                                       hintStyle: TextStyle(
-                                                           color: Colors.grey,
-                                                           fontSize: 15.0)),
-                                                 ),
+                                               Row(
+                                                 children: [
+                                                   SizedBox(
+                                                     width: 100,
+                                                     height: 60,
+                                                     child: CountryCodePicker(
+                                                       onChanged: (country) => {
+                                                         setState(() {
+                                                           countryCode = country.dialCode!;
+                                                         })
+                                                       },
+                                                       initialSelection: "LK",
+                                                       showCountryOnly: false,
+                                                       showOnlyCountryWhenClosed: false,
+                                                       favorite: ["+94", "LK"],
+                                                     ),
+                                                   ),
+                                                   Container(
+                                                     width: 150,
+                                                     child: TextField(
+                                                         controller: phoneNumber,
+                                                         maxLength: 9,
+                                                         keyboardType: TextInputType.number,
+                                                         decoration: InputDecoration(
+                                                           prefix: Padding(
+                                                             padding: EdgeInsets.all(4),
+                                                             child: Text(countryCode),
+                                                           ),
+                                                           border: OutlineInputBorder(
+                                                             borderRadius: BorderRadius.circular(15.0),
+                                                           ),
+                                                           contentPadding: EdgeInsets.all(15),
+                                                           fillColor: Colors.white,
+                                                           filled: true,
+                                                           hintText: "Driver Phone Number",
+                                                           hintStyle:
+                                                           TextStyle(color: Colors.grey, fontSize: 15.0),
+                                                         )),
+                                                   ),
+                                                 ],
                                                ),
                                                SizedBox(
                                                  height: 10,
@@ -209,7 +230,7 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                                                Expanded(
                                                    child: ElevatedButton(
                                                      onPressed: () async {
-                                                       if (email.text
+                                                       if (phoneNumber.text
                                                            .trim()
                                                            .isNotEmpty &&
                                                            name.text.trim().isNotEmpty &&
@@ -222,8 +243,8 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                                                          QuerySnapshot check =
                                                          await store
                                                              .collection('driver')
-                                                             .where('Email',
-                                                             isEqualTo: email
+                                                             .where('Contact_No',
+                                                             isEqualTo: phoneNumber
                                                                  .text
                                                                  .trim()
                                                                  .toLowerCase())
@@ -231,7 +252,7 @@ class _ParentProfileMainState extends State<ParentProfileMain> {
                                                          if (check.docs.isEmpty) {
                                                            setState(() {
                                                              error =
-                                                             'Email Not Registered';
+                                                             'Phone Number Not Registered';
                                                              setState(() {
                                                                loading = false;
                                                              });
